@@ -1,0 +1,185 @@
+{
+"children": [
+	{
+		"class": "Table",
+		"cells": [
+			{
+				"child": {
+					"class": "VerticalGroup",
+					"name": "vBox",
+					"alignment": 1,
+					"expand": true,
+					"fill": true,
+					"padLeft": 0,
+					"padRight": 0,
+					"padTop": 0,
+					"padBottom": 0,
+					"reverse": false,
+					"columnAlignment": 1,
+					"space": 4,
+					"wrap": false,
+					"wrapSpace": 0,
+					"children": [
+						{
+							"class": "Label",
+							"name": null,
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.Label",
+								"name": "default"
+							},
+							"text": "Enter your nickname:",
+							"textAlignment": 8,
+							"ellipsis": false,
+							"ellipsisString": "...",
+							"wrap": false,
+							"color": null,
+							"touchable": "enabled",
+							"visible": true
+						},
+						{
+							"class": "TextField",
+							"name": "nickname",
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.TextField",
+								"name": "default"
+							},
+							"text": null,
+							"passwordCharacter": "•",
+							"passwordMode": false,
+							"alignment": 1,
+							"disabled": false,
+							"cursorPosition": 0,
+							"selectionStart": 0,
+							"selectionEnd": 0,
+							"selectAll": false,
+							"focusTraversal": true,
+							"maxLength": 0,
+							"messageText": null,
+							"touchable": "enabled",
+							"visible": true
+						},
+						{
+							"class": "Label",
+							"name": null,
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.Label",
+								"name": "default"
+							},
+							"text": "Enter room's name:",
+							"textAlignment": 1,
+							"ellipsis": false,
+							"ellipsisString": "...",
+							"wrap": false,
+							"color": null,
+							"touchable": "enabled",
+							"visible": true
+						},
+						{
+							"class": "TextField",
+							"name": "room",
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.TextField",
+								"name": "default"
+							},
+							"text": null,
+							"passwordCharacter": "•",
+							"passwordMode": false,
+							"alignment": 1,
+							"disabled": false,
+							"cursorPosition": 0,
+							"selectionStart": 0,
+							"selectionEnd": 0,
+							"selectAll": false,
+							"focusTraversal": true,
+							"maxLength": 0,
+							"messageText": null,
+							"touchable": "enabled",
+							"visible": true
+						},
+						{
+							"class": "TextButton",
+							"name": "createRoom",
+							"text": "Create Room",
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.TextButton",
+								"name": "default"
+							},
+							"checked": false,
+							"disabled": false,
+							"color": null,
+							"padLeft": 0,
+							"padRight": 0,
+							"padTop": 0,
+							"padBottom": 0,
+							"touchable": "enabled",
+							"visible": true
+						},
+						{
+							"class": "TextButton",
+							"name": "back",
+							"text": "Back to main menu",
+							"style": {
+								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.TextButton",
+								"name": "default"
+							},
+							"checked": false,
+							"disabled": false,
+							"color": null,
+							"padLeft": 0,
+							"padRight": 0,
+							"padTop": 0,
+							"padBottom": 0,
+							"touchable": "enabled",
+							"visible": true
+						}
+					],
+					"touchable": "enabled",
+					"visible": true
+				},
+				"row": 0,
+				"column": 0,
+				"padLeft": 0,
+				"padRight": 0,
+				"padTop": 0,
+				"padBottom": 0,
+				"spaceLeft": 0,
+				"spaceRight": 0,
+				"spaceTop": 0,
+				"spaceBottom": 0,
+				"expandX": false,
+				"expandY": false,
+				"fillX": false,
+				"fillY": false,
+				"growX": false,
+				"growY": false,
+				"alignment": 1,
+				"minWidth": -1,
+				"minHeight": -1,
+				"maxWidth": -1,
+				"maxHeight": -1,
+				"preferredWidth": -1,
+				"preferredHeight": -1,
+				"uniformX": true,
+				"uniformY": false,
+				"colSpan": 1
+			}
+		],
+		"name": null,
+		"background": "window",
+		"color": null,
+		"padLeft": 0,
+		"padRight": 0,
+		"padTop": 0,
+		"padBottom": 0,
+		"paddingEnabled": false,
+		"alignment": 1,
+		"fillParent": true,
+		"touchable": "childrenOnly",
+		"visible": true
+	}
+],
+"backgroundColor": null,
+"skinPath": "skin.json",
+"packageString": "com.mygdx.game",
+"classString": "Core"
+}
