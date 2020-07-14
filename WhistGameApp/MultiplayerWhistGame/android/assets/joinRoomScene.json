@@ -98,7 +98,7 @@
 						},
 						{
 							"class": "TextButton",
-							"name": "createRoom",
+							"name": "joinRoom",
 							"text": "Join Room",
 							"style": {
 								"clazz": "com.badlogic.gdx.scenes.scene2d.ui.TextButton",
