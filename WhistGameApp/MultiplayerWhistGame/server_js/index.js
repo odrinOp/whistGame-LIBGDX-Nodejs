@@ -117,6 +117,7 @@ server.listen(8080,function () {
 
 io.on('connection',socket=>{
     console.log("New client connected: ID:" + socket.id);
+    service.login({socketID: socket.id});
 
 
     socket.on('createRoom',data=>{
@@ -152,23 +153,37 @@ io.on('connection',socket=>{
         }
     });
 
+    socket.on('leaveRoom',()=>{
+        try{
+            var room = service.getRoomForPlayer(socket.id);
+            if(room != null){
+                service.leaveRoom(socket.id);
+                socket.leave(room.roomID);
+                io.to(room.roomID).emit("lobbyData",room.toJSON());
+            }
+            
+        }catch (e){
+            socket.emit("errorMessage",{msg:e});
+        }
+    })
+
     socket.on('disconnect',()=>{
         try{
 
             var room = service.getRoomForPlayer(socket.id);
-            if (room == null)
-                return;
-            service.leaveRoom(socket.id);
-
-            socket.leave(room.roomID);
-            //console.log(room.roomID);
+            if (room != null)
+                {    
+                    service.leaveRoom(socket.id);;
+                    socket.leave(room.roomID);
+                    io.to(room.roomID).emit("lobbyData",room.toJSON());
+                    
+                }
+            service.logout({socketID: socket.id});
             console.log("Client " + socket.id + " disconnected" );
-            //console.log("Connected clients: " + service.getLoggedPlayersSize())
+            
 
-            console.log(room);
-            if(room != null)
-                io.to(room.roomID).emit("lobbyData",room.toJSON());
-
+        
+            
             service.showStats();
 
         }catch (e) {

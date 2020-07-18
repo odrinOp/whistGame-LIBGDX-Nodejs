@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ray3k.stripe.scenecomposer.SceneComposerStageBuilder;
 import com.whist.game.StartClient;
 import com.whist.game.utils.Constants;
-import javafx.scene.layout.VBox;
+
 
 public class JoinRoomScreen implements Screen {
 

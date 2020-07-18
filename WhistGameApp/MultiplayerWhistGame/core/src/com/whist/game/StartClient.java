@@ -36,7 +36,7 @@ public class StartClient extends Game  {
     private AppState state = AppState.MAIN_MENU;
     boolean changeState = false;
     /*server related */
-    private String serverHTTP = "https://whist.serverless.social";
+    private String serverHTTP = "https://whistgame.serverless.social";
 
 
     @Override
@@ -70,10 +70,12 @@ public class StartClient extends Game  {
     public void create() {
 
         mainMenuScreen = new MainMenuScreen(this);
-         createRoomScreen = new CreateRoomScreen(this);
+        createRoomScreen = new CreateRoomScreen(this);
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
         setScreen(mainMenuScreen);
+        login();
+
     }
 
     public void goToCreateRoom() {
@@ -143,16 +145,28 @@ public class StartClient extends Game  {
 
     }
 
-    public void createRoom(String nickname, String room) {
+    private void login(){
+        Gdx.app.log(TAG,"Trying to connect to server: " + serverHTTP );
         try {
-            Gdx.app.log(TAG,"Trying to connect to server: " + serverHTTP );
             socket = IO.socket(serverHTTP);
             socket.connect();
+            while (!socket.connected()){
+                Thread.sleep(1000);
+            };
             if (socket.connected())
                 Gdx.app.log("SocketIO","Connected");
             else
                 Gdx.app.log("SocketIO","Can't connect");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    public void createRoom(String nickname, String room) {
+        try {
 
             JSONObject createRoomData = new JSONObject();
             createRoomData.put("nickname",nickname);
@@ -160,7 +174,7 @@ public class StartClient extends Game  {
             socket.emit("createRoom",createRoomData);
             configSocketEvents();
 
-        } catch (URISyntaxException | JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -174,10 +188,6 @@ public class StartClient extends Game  {
 
     public void joinRoom(String nickname, String room) {
         try{
-            Gdx.app.log(TAG,"Trying to connect to server: " + serverHTTP);
-            socket = IO.socket(serverHTTP);
-            socket.connect();
-
             JSONObject joinRoomData = new JSONObject();
             joinRoomData.put("nickname",nickname);
             joinRoomData.put("roomID",room);
@@ -185,7 +195,7 @@ public class StartClient extends Game  {
             socket.emit("joinRoom",joinRoomData);
             configSocketEvents();
 
-        } catch (URISyntaxException | JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -193,5 +203,18 @@ public class StartClient extends Game  {
     public void goToJoinRoom() {
         state = AppState.JOIN_ROOM;
         changeState = true;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        System.out.println("Disposed here!");
+        if(socket != null)
+            socket.disconnect();
+    }
+
+    public void leaveRoom() {
+        if(socket != null)
+            socket.emit("leaveRoom");
     }
 }

@@ -8,6 +8,18 @@ module.exports = class Service{
         this.loggedPlayersSize = 0;
     }
 
+    login(jsonData){
+        let socketID = jsonData.socketID;
+        this.loggedPlayers[socketID] = {nickname: null, room: null};
+        this.loggedPlayersSize += 1;
+    }
+
+    logout(jsonData){
+        let socketID = jsonData.socketID;
+        this.loggedPlayers[socketID] = null;
+        this.loggedPlayersSize -= 1;
+    }
+
     createRoom(jsonData){
 
         var socketID = jsonData.id;
@@ -28,10 +40,8 @@ module.exports = class Service{
 
         try {
             this.roomRepo.createRoom(room);
-            this.loggedPlayers[socketID] = {};
             this.loggedPlayers[socketID].nickname = nickname;
             this.loggedPlayers[socketID].room = roomID;
-            this.loggedPlayersSize += 1;
 
             console.log(this.loggedPlayers[socketID]);
         }catch (e) {
@@ -59,8 +69,8 @@ module.exports = class Service{
             this.roomRepo.updateRoom(room);
 
 
-        this.loggedPlayers[playerID] = null;
-        this.loggedPlayersSize -= 1;
+        this.loggedPlayers[playerID] = {nickname: null, room: null};
+        
 
     }
 
@@ -76,10 +86,10 @@ module.exports = class Service{
         try {
             room.addPlayer(new Player(socketID, nickname));
             this.roomRepo.updateRoom(room);
-            this.loggedPlayers[socketID] = {};
+          
             this.loggedPlayers[socketID].nickname = nickname;
             this.loggedPlayers[socketID].room = roomID;
-            this.loggedPlayersSize += 1;
+           
         }catch (e) {
             this.loggedPlayers[socketID] = null;
             //console.log(e.message);
@@ -90,11 +100,11 @@ module.exports = class Service{
 
     getRoomForPlayer(playerID){
         if (this.loggedPlayers[playerID] == null)
-            throw "Player no longer exist!";
+            return null;
 
         var roomID = this.loggedPlayers[playerID].room;
         if(roomID == null)
-            throw "Room no longer exist!";
+            return null;
 
         return this.roomRepo.getRoom(roomID);
     }
