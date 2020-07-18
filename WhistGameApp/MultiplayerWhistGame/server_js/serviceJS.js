@@ -131,4 +131,9 @@ module.exports = class Service{
         console.log("Available rooms: " + this.roomRepo.getSize());
     }
 
+
+    getAllRooms(){
+        return this.roomRepo.toJSON();
+    }
+
 }

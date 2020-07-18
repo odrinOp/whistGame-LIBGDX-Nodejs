@@ -136,7 +136,6 @@ io.on('connection',socket=>{
         }
     });
 
-
     socket.on('joinRoom', data=>{
         var jsonData = {id: socket.id,nickname:data.nickname,roomID: data.roomID};
         try{
@@ -152,6 +151,12 @@ io.on('connection',socket=>{
             socket.emit("errorMessage",{msg: e});
         }
     });
+
+    socket.on('getRoomsRQ',()=>{
+        var jsonData = service.getAllRooms();
+        console.log(jsonData);
+        socket.emit("getRoomsRP",jsonData);
+    })
 
     socket.on('leaveRoom',()=>{
         try{

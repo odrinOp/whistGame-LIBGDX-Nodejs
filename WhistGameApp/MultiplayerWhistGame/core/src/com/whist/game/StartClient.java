@@ -2,6 +2,7 @@ package com.whist.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.sun.org.apache.bcel.internal.classfile.Constant;
 import com.whist.game.scenes.CreateRoomScreen;
 import com.whist.game.scenes.JoinRoomScreen;
 import com.whist.game.scenes.LobbyScreen;
@@ -10,6 +11,8 @@ import com.whist.game.scenes.MainMenuScreen;
 import com.whist.game.utils.AppState;
 
 
+import com.whist.game.utils.Constants;
+import com.whist.game.utils.DTO.LobbyData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +39,6 @@ public class StartClient extends Game  {
     private AppState state = AppState.MAIN_MENU;
     boolean changeState = false;
     /*server related */
-    private String serverHTTP = "https://whistgame.serverless.social";
 
 
     @Override
@@ -95,7 +97,6 @@ public class StartClient extends Game  {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
-
                 try {
                     String id = data.getString("id");
                     Gdx.app.log("SocketID",id);
@@ -110,29 +111,25 @@ public class StartClient extends Game  {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
-                try{
-                    Gdx.app.log(TAG,data.toString());
-                    System.out.println(data);
-                    String roomName = data.getString("roomID");
-                    //String ownerName = data.getString("owner");
-                    JSONArray array = data.getJSONArray("players");
-
-                    List<String> playersName = new LinkedList<>();
-                    for(int i = 0; i<array.length();i++){
-                        String playerName = array.getJSONObject(i).getString("nickname");
-                        playersName.add(playerName);
-                    }
+                Gdx.app.log(TAG,data.toString());
+                System.out.println(data);
+                LobbyData lobbyData = LobbyData.convertFromJSON(data);
 
 
-                    initLobbyScreen(roomName,"",playersName);
-                    state = AppState.LOBBY_ROOM;
-                    changeState = true;
+                initLobbyScreen(lobbyData.getRoomName(),"",lobbyData.getPlayers());
+                state = AppState.LOBBY_ROOM;
+                changeState = true;
 
 
+            }
+        });
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        socket.on("getRooms", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                Gdx.app.log(TAG,data.toString());
+
             }
         });
 
@@ -146,9 +143,9 @@ public class StartClient extends Game  {
     }
 
     private void login(){
-        Gdx.app.log(TAG,"Trying to connect to server: " + serverHTTP );
+        Gdx.app.log(TAG,"Trying to connect to server: " + Constants.serverHTTP);
         try {
-            socket = IO.socket(serverHTTP);
+            socket = IO.socket(Constants.serverHTTP);
             socket.connect();
             while (!socket.connected()){
                 Thread.sleep(1000);

@@ -44,12 +44,14 @@ module.exports = class RoomRepo{
         data.num_of_rooms = this.rooms.length;
         var roomsData = [];
         for(var localRooms of this.rooms){
-            roomsData.push(localRooms.toJSON());
+            roomsData.push(localRooms.toJSON2());
         }
 
         data.rooms = roomsData;
         return data;
 
     }
+
+    
 
 }

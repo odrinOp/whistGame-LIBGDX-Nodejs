@@ -129,6 +129,7 @@ public class LobbyScreen implements Screen {
         ownerLabel.setText("Owner: " + owner);
 
         playersBox.clear();
+
         for(String player: players){
             playersBox.addActor(new Label(player,skin));
         }

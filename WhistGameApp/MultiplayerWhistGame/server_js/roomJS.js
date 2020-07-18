@@ -69,4 +69,13 @@ module.exports = class Room{
         };
     }
 
+    toJSON2(){
+        var loggedPlayers = this.loggedPlayers.length;
+        return{
+            roomID: this.roomID,
+            capacity: this.MAX_CAPACITY,
+            players: loggedPlayers
+        };
+    }
+
 }
