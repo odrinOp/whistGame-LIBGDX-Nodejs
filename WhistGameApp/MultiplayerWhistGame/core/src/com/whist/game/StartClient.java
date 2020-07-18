@@ -36,7 +36,7 @@ public class StartClient extends Game  {
     private AppState state = AppState.MAIN_MENU;
     boolean changeState = false;
     /*server related */
-    private String serverHTTP = "http://localhost:8080";
+    private String serverHTTP = "https://whist.serverless.social";
 
 
     @Override
