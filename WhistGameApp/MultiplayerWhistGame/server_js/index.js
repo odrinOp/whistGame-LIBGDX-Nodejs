@@ -9,6 +9,8 @@ var RoomRepo = require('./roomRepo');
 var Service = require('./serviceJS');
 
 
+// lt -h http://serverless.social -p 8080 -s whistgame
+
 function testService() {
     var roomRepo = new RoomRepo();
     var service = new Service(roomRepo);
