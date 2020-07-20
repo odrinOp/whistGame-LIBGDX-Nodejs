@@ -79,6 +79,10 @@ module.exports = class Service{
         var nickname = jsonData.nickname;
         var roomID = jsonData.roomID;
 
+        if(socketID == null || nickname == null || roomID == null)
+            throw "Invalid json data";
+
+
         var room = this.roomRepo.getRoom(roomID);
         if(room == null)
             throw "Room doesn't exists!";
@@ -91,7 +95,7 @@ module.exports = class Service{
             this.loggedPlayers[socketID].room = roomID;
            
         }catch (e) {
-            this.loggedPlayers[socketID] = null;
+            this.loggedPlayers[socketID] = {nickname: null, room : null};
             //console.log(e.message);
             throw e;
         }

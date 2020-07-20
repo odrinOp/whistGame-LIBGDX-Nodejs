@@ -3,11 +3,8 @@ package com.whist.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
-import com.whist.game.scenes.CreateRoomScreen;
-import com.whist.game.scenes.JoinRoomScreen;
-import com.whist.game.scenes.LobbyScreen;
+import com.whist.game.scenes.*;
 
-import com.whist.game.scenes.MainMenuScreen;
 import com.whist.game.utils.AppState;
 
 
@@ -34,9 +31,10 @@ public class StartClient extends Game  {
     CreateRoomScreen createRoomScreen;
     LobbyScreen lobbyScreen;
     JoinRoomScreen joinRoomScreen;
+    LoadingScreen loadingScreen;
 
     private Socket socket;
-    private AppState state = AppState.MAIN_MENU;
+    private AppState state = AppState.LOADING;
     boolean changeState = false;
     /*server related */
 
@@ -44,6 +42,16 @@ public class StartClient extends Game  {
     @Override
     public void render() {
         super.render();
+
+        if(socket != null){
+            if(socket.connected() && state ==AppState.LOADING)
+            {
+                state = AppState.MAIN_MENU;
+                changeState = true;
+            }
+        }
+
+
         if(changeState) {
             switch (state) {
                 case MAIN_MENU:
@@ -57,6 +65,9 @@ public class StartClient extends Game  {
                     break;
                 case LOBBY_ROOM:
                     setScreen(lobbyScreen);
+                    break;
+                case LOADING:
+                    setScreen(loadingScreen);
                     break;
             }
             changeState = false;
@@ -75,8 +86,10 @@ public class StartClient extends Game  {
         createRoomScreen = new CreateRoomScreen(this);
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
-        setScreen(mainMenuScreen);
+        loadingScreen = new LoadingScreen(this);
         login();
+        setScreen(loadingScreen);
+
 
     }
 
@@ -144,21 +157,15 @@ public class StartClient extends Game  {
 
     private void login(){
         Gdx.app.log(TAG,"Trying to connect to server: " + Constants.serverHTTP);
+
         try {
             socket = IO.socket(Constants.serverHTTP);
             socket.connect();
-            while (!socket.connected()){
-                Thread.sleep(1000);
-            };
-            if (socket.connected())
-                Gdx.app.log("SocketIO","Connected");
-            else
-                Gdx.app.log("SocketIO","Can't connect");
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+
+
 
     }
 
