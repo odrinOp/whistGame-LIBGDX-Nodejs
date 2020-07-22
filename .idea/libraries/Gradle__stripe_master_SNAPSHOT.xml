@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: stripe-master-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.raeleus/stripe/master-SNAPSHOT/6345626480e93da86f00ed5ecf259e480fca6488/stripe-master-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.raeleus/stripe/master-SNAPSHOT/cc3e50ba59dfe95f2b5c828d9122c1b258a44883/stripe-master-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
