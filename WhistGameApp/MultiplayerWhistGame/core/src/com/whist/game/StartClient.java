@@ -3,6 +3,7 @@ package com.whist.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
+import com.whist.game.generics.Room;
 import com.whist.game.scenes.*;
 
 import com.whist.game.utils.AppState;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -153,23 +155,25 @@ public class StartClient extends Game  {
                     String roomID;
                     int maxCapacity;
 
-
-
+                    List<Room> rooms = new ArrayList<>();
+                    System.out.println();
                     JSONArray roomsJSONArray = data.getJSONArray("rooms");
                     for(int i = 0; i<roomsJSONArray.length() ; i++){
+                        Room rm = new Room();
+                        rm.setNrOfPlayers(roomsJSONArray.getJSONObject(i).getInt("players"));
+                        rm.setRoomID(roomsJSONArray.getJSONObject(i).getString("roomID"));
+                        rm.setMaxCapacity(roomsJSONArray.getJSONObject(i).getInt("capacity"));
 
-                        playersNr = roomsJSONArray.getJSONObject(i).getInt("players");
-                        roomID = roomsJSONArray.getJSONObject(i).getString("roomID");
-                        maxCapacity = roomsJSONArray.getJSONObject(i).getInt("capacity");
-                        //Room room = new Room(roomID,playersNr,maxCapacity);
-                        System.out.println("Prsed data : " + playersNr +  " " + roomID + "  " + maxCapacity);
-
+                        rooms.add(rm);
+                       // System.out.println("Prsed data : " + playersNr +  " " + roomID + "  " + maxCapacity);
 
                     }
 
+                    System.out.println(rooms);
+
 
                     //.initLobbyScreen(roomName,"",playersName);
-                    state = AppState.LOBBY_ROOM;
+                    state = AppState.JOIN_ROOM;
                     changeState = true;
 
                 } catch (Exception e) {
@@ -193,6 +197,7 @@ public class StartClient extends Game  {
 
         try {
             socket = IO.socket(Constants.serverHTTP);
+            configSocketEvents();
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -253,5 +258,9 @@ public class StartClient extends Game  {
     public void leaveRoom() {
         if(socket != null)
             socket.emit("leaveRoom");
+    }
+
+    public void getRooms() {
+        socket.emit("getRoomsRQ");
     }
 }
