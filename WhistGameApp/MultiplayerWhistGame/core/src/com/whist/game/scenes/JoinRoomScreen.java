@@ -40,11 +40,7 @@ public class JoinRoomScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
-        Label nameLabel = new Label("Name:", skin);
-        Label addressLabel = new Label("Dummy:", skin);
-        Label addressLabe2 = new Label("Dummy:", skin);
-        Label addressLabe3 = new Label("Dummy:", skin);
-        Label addressLabe4 = new Label("Dummy:", skin);
+
 
         List<Room> rooms = new ArrayList<>();
         Room room = new Room("Room1",7,5);
@@ -56,21 +52,7 @@ public class JoinRoomScreen implements Screen {
 
         table.defaults().expandX().fill().space(5f);
         refreshTable(table,this.rooms);
-        //table.pad(10f);
-//        table.add(nameLabel);
-//
-//        table.row();
-//        table.add(addressLabel);
-//
-//        table.row();
-//        table.add(addressLabe2);
-//        table.row();
-//        table.add(addressLabe3);
-//        table.row();
-//        table.add(addressLabe4);
 
-
-        //table.right().bottom();
 
         ScrollPane scrollPane = new ScrollPane(table,skin);
         scrollPane.setWidth(400f);
@@ -84,15 +66,7 @@ public class JoinRoomScreen implements Screen {
         backBtn.setHeight(30);
         backBtn.setWidth(100);
 
-//        joinRoomBtn.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//               // String nickname = nicknameField.getText();
-//               // String room = roomField.getText();
-//
-//                mainController.joinRoom(nickname,room);
-//            }
-//        });
+
 
 
 
@@ -110,7 +84,7 @@ public class JoinRoomScreen implements Screen {
     }
 
     public void refreshTable(Table table, List<Room> rooms){
-        for (Room rm:rooms) {
+        for (final Room rm:rooms) {
             table.add(new Label(rm.getRoomID(),skin));
             table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin));
             TextButton joinBtn = new TextButton("Join",skin);
@@ -118,7 +92,8 @@ public class JoinRoomScreen implements Screen {
             joinBtn.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    mainController.goToLobby();
+
+                    mainController.goToCredentialsScreen(rm.getRoomID());
                 }
             });
 

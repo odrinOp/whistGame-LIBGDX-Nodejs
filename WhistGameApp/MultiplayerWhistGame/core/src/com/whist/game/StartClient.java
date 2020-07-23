@@ -34,6 +34,7 @@ public class StartClient extends Game  {
     LobbyScreen lobbyScreen;
     JoinRoomScreen joinRoomScreen;
     LoadingScreen loadingScreen;
+    CredentialsScreen credentialsScreen;
 
     private Socket socket;
     private AppState state = AppState.LOADING;
@@ -71,6 +72,9 @@ public class StartClient extends Game  {
                 case LOADING:
                     setScreen(loadingScreen);
                     break;
+                case CREDENTIALS:
+                    setScreen(credentialsScreen);
+                    break;
             }
             changeState = false;
         }
@@ -89,6 +93,8 @@ public class StartClient extends Game  {
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
         loadingScreen = new LoadingScreen(this);
+        credentialsScreen = new CredentialsScreen(this);
+
         login();
         setScreen(loadingScreen);
 
@@ -109,8 +115,6 @@ public class StartClient extends Game  {
 
     private void configSocketEvents() {
 
-
-
         socket.on("lobbyData", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -121,6 +125,7 @@ public class StartClient extends Game  {
 
 
                 initLobbyScreen(lobbyData.getRoomName(),"",lobbyData.getPlayers());
+                System.out.println(lobbyData.getPlayers());
                 state = AppState.LOBBY_ROOM;
                 changeState = true;
 
@@ -260,5 +265,12 @@ public class StartClient extends Game  {
 
     public void getRooms() {
         socket.emit("getRoomsRQ");
+    }
+
+    public void goToCredentialsScreen(String roomID) {
+        credentialsScreen.setRoomID(roomID);
+        state = AppState.CREDENTIALS;
+        changeState = true;
+
     }
 }
