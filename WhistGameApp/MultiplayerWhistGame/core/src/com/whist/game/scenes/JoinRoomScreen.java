@@ -35,64 +35,40 @@ public class JoinRoomScreen implements Screen {
 
     @Override
     public void show() {
+
+
+
         stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
         skin = new Skin(Gdx.files.internal("skin.json"));
 
         Gdx.input.setInputProcessor(stage);
 
-        Label nameLabel = new Label("Name:", skin);
-        Label addressLabel = new Label("Dummy:", skin);
-        Label addressLabe2 = new Label("Dummy:", skin);
-        Label addressLabe3 = new Label("Dummy:", skin);
-        Label addressLabe4 = new Label("Dummy:", skin);
 
         List<Room> rooms = new ArrayList<>();
         Room room = new Room("Room1",7,5);
         rooms.add(room);
         Table table = new Table();
         table.debug();
-        // table.setFillParent(true);
+
         table.center();
 
         table.defaults().expandX().fill().space(5f);
         refreshTable(table,this.rooms);
-        //table.pad(10f);
-//        table.add(nameLabel);
-//
-//        table.row();
-//        table.add(addressLabel);
-//
-//        table.row();
-//        table.add(addressLabe2);
-//        table.row();
-//        table.add(addressLabe3);
-//        table.row();
-//        table.add(addressLabe4);
 
-
-        //table.right().bottom();
 
         ScrollPane scrollPane = new ScrollPane(table,skin);
-        scrollPane.setWidth(400f);
-        scrollPane.setWidth(400f);
-        scrollPane.setPosition(100,100);
+        scrollPane.setWidth(Constants.WORLD_WIDTH*2-200);
+        scrollPane.setHeight(Constants.WORLD_HEIGHT-100);
+        scrollPane.setPosition(50,50);
         scrollPane.debug();
 
 
         TextButton backBtn = new TextButton("Back",skin);
-        backBtn.setPosition(Constants.WORLD_WIDTH/2,Constants.WORLD_HEIGHT/10);
+        backBtn.setPosition(30,30);
         backBtn.setHeight(30);
         backBtn.setWidth(100);
 
-//        joinRoomBtn.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//               // String nickname = nicknameField.getText();
-//               // String room = roomField.getText();
-//
-//                mainController.joinRoom(nickname,room);
-//            }
-//        });
+
 
 
 
