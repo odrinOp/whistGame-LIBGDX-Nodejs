@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.ray3k.stripe.scenecomposer.SceneComposerStageBuilder;
 import com.whist.game.StartClient;
+import com.whist.game.generics.Room;
 import com.whist.game.utils.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class JoinRoomScreen implements Screen {
@@ -24,6 +25,9 @@ public class JoinRoomScreen implements Screen {
     private StartClient mainController;
     private Skin skin;
     private Stage stage;
+    private List<Room> rooms = new ArrayList<>();
+
+
 
     public JoinRoomScreen(StartClient mainController) {
         this.mainController = mainController;
@@ -42,26 +46,28 @@ public class JoinRoomScreen implements Screen {
         Label addressLabe3 = new Label("Dummy:", skin);
         Label addressLabe4 = new Label("Dummy:", skin);
 
-
-
+        List<Room> rooms = new ArrayList<>();
+        Room room = new Room("Room1",7,5);
+        rooms.add(room);
         Table table = new Table();
         table.debug();
         // table.setFillParent(true);
         table.center();
 
         table.defaults().expandX().fill().space(5f);
+        refreshTable(table,this.rooms);
         //table.pad(10f);
-        table.add(nameLabel);
-
-        table.row();
-        table.add(addressLabel);
-
-        table.row();
-        table.add(addressLabe2);
-        table.row();
-        table.add(addressLabe3);
-        table.row();
-        table.add(addressLabe4);
+//        table.add(nameLabel);
+//
+//        table.row();
+//        table.add(addressLabel);
+//
+//        table.row();
+//        table.add(addressLabe2);
+//        table.row();
+//        table.add(addressLabe3);
+//        table.row();
+//        table.add(addressLabe4);
 
 
         //table.right().bottom();
@@ -103,6 +109,24 @@ public class JoinRoomScreen implements Screen {
 
     }
 
+    public void refreshTable(Table table, List<Room> rooms){
+        for (Room rm:rooms) {
+            table.add(new Label(rm.getRoomID(),skin));
+            table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin));
+            TextButton joinBtn = new TextButton("Join",skin);
+            table.add(joinBtn);
+            joinBtn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    mainController.goToLobby();
+                }
+            });
+
+            table.row();
+        }
+
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.8f,0.8f, 0.8f, 1.0f);
@@ -136,5 +160,15 @@ public class JoinRoomScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+    }
+
+
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 }

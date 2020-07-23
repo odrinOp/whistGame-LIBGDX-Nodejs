@@ -158,9 +158,9 @@ public class StartClient extends Game  {
                        // System.out.println("Prsed data : " + playersNr +  " " + roomID + "  " + maxCapacity);
 
                     }
-
+                    System.out.println("DONE GETTING ROOMS");
                     System.out.println(rooms);
-
+                    joinRoomScreen.setRooms(rooms);
 
                     //.initLobbyScreen(roomName,"",playersName);
                     state = AppState.JOIN_ROOM;
@@ -237,6 +237,11 @@ public class StartClient extends Game  {
     public void goToJoinRoom() {
         socket.emit("getRoomsRQ");
         state = AppState.JOIN_ROOM;
+        changeState = true;
+    }
+
+    public void goToLobby() {
+        state = AppState.LOBBY_ROOM;
         changeState = true;
     }
 
