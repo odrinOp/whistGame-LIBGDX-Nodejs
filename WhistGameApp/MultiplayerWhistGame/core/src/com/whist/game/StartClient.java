@@ -106,18 +106,7 @@ public class StartClient extends Game  {
 
 
     private void configSocketEvents() {
-        socket.on("socketID", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String id = data.getString("id");
-                    Gdx.app.log("SocketID",id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
 
 
         socket.on("lobbyData", new Emitter.Listener() {
@@ -137,9 +126,10 @@ public class StartClient extends Game  {
             }
         });
 
-        socket.on("getRooms", new Emitter.Listener() {
+        socket.on("getRoomsRP", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Gdx.app.log("ConfigSocketEvents-getRoomsRP","Here");
                 JSONObject data = (JSONObject) args[0];
                 Gdx.app.log(TAG,data.toString());
 
@@ -161,6 +151,8 @@ public class StartClient extends Game  {
         try {
             socket = IO.socket(Constants.serverHTTP);
             socket.connect();
+
+            configSocketEvents();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -176,7 +168,7 @@ public class StartClient extends Game  {
             createRoomData.put("nickname",nickname);
             createRoomData.put("roomID",room);
             socket.emit("createRoom",createRoomData);
-            configSocketEvents();
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -205,6 +197,7 @@ public class StartClient extends Game  {
     }
 
     public void goToJoinRoom() {
+        socket.emit("getRoomsRQ");
         state = AppState.JOIN_ROOM;
         changeState = true;
     }
