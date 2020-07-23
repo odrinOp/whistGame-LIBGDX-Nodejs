@@ -131,8 +131,41 @@ public class StartClient extends Game  {
             public void call(Object... args) {
                 Gdx.app.log("ConfigSocketEvents-getRoomsRP","Here");
                 JSONObject data = (JSONObject) args[0];
-                Gdx.app.log(TAG,data.toString());
+                try{
+                    //Gdx.app.log(TAG,data.toString());
+                    System.out.println("JSON DATA = " + data);
 
+                    int numberOfRooms = Integer.parseInt(data.getString("num_of_rooms"));
+
+                    System.out.println("int numberOfRooms = " + numberOfRooms);
+
+                    int playersNr;
+                    String roomID;
+                    int maxCapacity;
+
+
+
+                    JSONArray roomsJSONArray = data.getJSONArray("rooms");
+                    for(int i = 0; i<roomsJSONArray.length() ; i++){
+
+                        playersNr = roomsJSONArray.getJSONObject(i).getInt("players");
+                        roomID = roomsJSONArray.getJSONObject(i).getString("roomID");
+                        maxCapacity = roomsJSONArray.getJSONObject(i).getInt("capacity");
+                        //Room room = new Room(roomID,playersNr,maxCapacity);
+                        System.out.println("Prsed data : " + playersNr +  " " + roomID + "  " + maxCapacity);
+
+
+                    }
+
+
+                    //.initLobbyScreen(roomName,"",playersName);
+                    state = AppState.LOBBY_ROOM;
+                    changeState = true;
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
             }
         });
 
