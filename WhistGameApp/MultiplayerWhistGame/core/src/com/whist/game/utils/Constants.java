@@ -7,6 +7,7 @@ public class Constants {
     public final static float WORLD_WIDTH = 400f;
     public final static float WORLD_HEIGHT = 400f;
 
-    public final static String serverHTTP = "https://whistgamev1.serverless.social";
+    public final static String serverHTTP = "https://whistgamev2.serverless.social";
+
 
 }
