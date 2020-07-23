@@ -53,6 +53,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log(TAG + "-" + actor.getName(), "Pressed");
+                mainController.getRooms();
                 mainController.goToJoinRoom();
             }
         });
