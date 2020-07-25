@@ -34,6 +34,7 @@ public class StartClient extends Game  {
     LobbyScreen lobbyScreen;
     JoinRoomScreen joinRoomScreen;
     LoadingScreen loadingScreen;
+    CredentialsScreen credentialsScreen;
 
     private Socket socket;
     private AppState state = AppState.LOADING;
@@ -45,13 +46,6 @@ public class StartClient extends Game  {
     public void render() {
         super.render();
 
-        if(socket != null){
-            if(socket.connected() && state ==AppState.LOADING)
-            {
-                state = AppState.MAIN_MENU;
-                changeState = true;
-            }
-        }
 
 
         if(changeState) {
@@ -71,6 +65,9 @@ public class StartClient extends Game  {
                 case LOADING:
                     setScreen(loadingScreen);
                     break;
+                case CREDENTIALS:
+                    setScreen(credentialsScreen);
+                    break;
             }
             changeState = false;
         }
@@ -89,6 +86,8 @@ public class StartClient extends Game  {
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
         loadingScreen = new LoadingScreen(this);
+        credentialsScreen = new CredentialsScreen(this);
+
         login();
         setScreen(loadingScreen);
 
@@ -109,8 +108,13 @@ public class StartClient extends Game  {
 
     private void configSocketEvents() {
 
-
-
+        socket.on("connected", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                state = AppState.MAIN_MENU;
+                changeState = true;
+            }
+        });
         socket.on("lobbyData", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -121,6 +125,7 @@ public class StartClient extends Game  {
 
 
                 initLobbyScreen(lobbyData.getRoomName(),"",lobbyData.getPlayers());
+                System.out.println(lobbyData.getPlayers());
                 state = AppState.LOBBY_ROOM;
                 changeState = true;
 
@@ -141,9 +146,7 @@ public class StartClient extends Game  {
 
                     System.out.println("int numberOfRooms = " + numberOfRooms);
 
-                    int playersNr;
-                    String roomID;
-                    int maxCapacity;
+
 
                     List<Room> rooms = new ArrayList<>();
                     System.out.println();
@@ -155,14 +158,14 @@ public class StartClient extends Game  {
                         rm.setMaxCapacity(roomsJSONArray.getJSONObject(i).getInt("capacity"));
 
                         rooms.add(rm);
-                       // System.out.println("Prsed data : " + playersNr +  " " + roomID + "  " + maxCapacity);
+
 
                     }
                     System.out.println("DONE GETTING ROOMS");
                     System.out.println(rooms);
                     joinRoomScreen.setRooms(rooms);
 
-                    //.initLobbyScreen(roomName,"",playersName);
+
                     state = AppState.JOIN_ROOM;
                     changeState = true;
 
@@ -206,6 +209,8 @@ public class StartClient extends Game  {
             createRoomData.put("nickname",nickname);
             createRoomData.put("roomID",room);
             socket.emit("createRoom",createRoomData);
+            state = AppState.LOADING;
+            changeState = true;
 
 
         } catch (JSONException e) {
@@ -227,7 +232,8 @@ public class StartClient extends Game  {
             joinRoomData.put("roomID",room);
 
             socket.emit("joinRoom",joinRoomData);
-            configSocketEvents();
+            state = AppState.LOADING;
+            changeState = true;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -236,14 +242,11 @@ public class StartClient extends Game  {
 
     public void goToJoinRoom() {
         socket.emit("getRoomsRQ");
-        state = AppState.JOIN_ROOM;
+        state = AppState.LOADING;
         changeState = true;
     }
 
-    public void goToLobby() {
-        state = AppState.LOBBY_ROOM;
-        changeState = true;
-    }
+
 
     @Override
     public void dispose() {
@@ -260,5 +263,12 @@ public class StartClient extends Game  {
 
     public void getRooms() {
         socket.emit("getRoomsRQ");
+    }
+
+    public void goToCredentialsScreen(String roomID) {
+        credentialsScreen.setRoomID(roomID);
+        state = AppState.CREDENTIALS;
+        changeState = true;
+
     }
 }
