@@ -64,13 +64,9 @@ public class JoinRoomScreen implements Screen {
 
 
         TextButton backBtn = new TextButton("Back",skin);
-        backBtn.setPosition(30,30);
+        backBtn.setPosition(15,15);
         backBtn.setHeight(30);
         backBtn.setWidth(100);
-
-
-
-
 
         backBtn.addListener(new ChangeListener() {
             @Override
