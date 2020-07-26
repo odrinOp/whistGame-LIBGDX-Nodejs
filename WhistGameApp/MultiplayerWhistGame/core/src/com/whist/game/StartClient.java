@@ -2,7 +2,7 @@ package com.whist.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.sun.org.apache.bcel.internal.classfile.Constant;
+
 import com.whist.game.generics.Room;
 import com.whist.game.scenes.*;
 
@@ -34,7 +34,10 @@ public class StartClient extends Game  {
     LobbyScreen lobbyScreen;
     JoinRoomScreen joinRoomScreen;
     LoadingScreen loadingScreen;
+
+    GameScreen gameScreen;
     CredentialsScreen credentialsScreen;
+
 
     private Socket socket;
     private AppState state = AppState.LOADING;
@@ -44,7 +47,16 @@ public class StartClient extends Game  {
 
     @Override
     public void render() {
+
         super.render();
+
+
+        if(socket != null){
+            if(socket.connected() && state ==AppState.LOADING) {
+                state = AppState.MAIN_MENU;
+                changeState = true;
+            }
+        }
 
 
 
@@ -64,6 +76,8 @@ public class StartClient extends Game  {
                     break;
                 case LOADING:
                     setScreen(loadingScreen);
+                case GAME_SCREEN:
+                    setScreen(gameScreen);
                     break;
                 case CREDENTIALS:
                     setScreen(credentialsScreen);
@@ -71,7 +85,6 @@ public class StartClient extends Game  {
             }
             changeState = false;
         }
-
     }
 
 
@@ -86,11 +99,13 @@ public class StartClient extends Game  {
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
         loadingScreen = new LoadingScreen(this);
+
+        gameScreen = new GameScreen(this);
+
         credentialsScreen = new CredentialsScreen(this);
 
         login();
         setScreen(loadingScreen);
-
 
     }
 
@@ -108,6 +123,7 @@ public class StartClient extends Game  {
 
     private void configSocketEvents() {
 
+
         socket.on("connected", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -115,6 +131,7 @@ public class StartClient extends Game  {
                 changeState = true;
             }
         });
+
         socket.on("lobbyData", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -156,7 +173,6 @@ public class StartClient extends Game  {
                         rm.setNrOfPlayers(roomsJSONArray.getJSONObject(i).getInt("players"));
                         rm.setRoomID(roomsJSONArray.getJSONObject(i).getString("roomID"));
                         rm.setMaxCapacity(roomsJSONArray.getJSONObject(i).getInt("capacity"));
-
                         rooms.add(rm);
 
 
@@ -187,7 +203,6 @@ public class StartClient extends Game  {
 
     private void login(){
         Gdx.app.log(TAG,"Trying to connect to server: " + Constants.serverHTTP);
-
         try {
             socket = IO.socket(Constants.serverHTTP);
             configSocketEvents();
@@ -197,8 +212,6 @@ public class StartClient extends Game  {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-
 
     }
 
@@ -265,10 +278,23 @@ public class StartClient extends Game  {
         socket.emit("getRoomsRQ");
     }
 
+
+   // TODO de implementat asta in server gen...
+    public void bid(int bidAmount) {
+        if(bidAmount < 0 || bidAmount>8){
+            throw new NumberFormatException("bet not in [0,8]");
+        }
+        socket.emit("bid", bidAmount);
+    }
+
+    public void goToGame() {
+        state = AppState.GAME_SCREEN;
+        changeState = true;
     public void goToCredentialsScreen(String roomID) {
         credentialsScreen.setRoomID(roomID);
         state = AppState.CREDENTIALS;
         changeState = true;
+
 
     }
 }

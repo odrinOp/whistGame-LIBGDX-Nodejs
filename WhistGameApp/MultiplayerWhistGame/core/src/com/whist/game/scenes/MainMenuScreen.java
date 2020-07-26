@@ -21,9 +21,6 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(StartClient mainController) {
         this.mainController = mainController;
-
-
-
     }
 
     @Override

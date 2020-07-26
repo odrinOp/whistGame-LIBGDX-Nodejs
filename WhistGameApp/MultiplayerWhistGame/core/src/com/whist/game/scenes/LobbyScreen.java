@@ -47,7 +47,6 @@ public class LobbyScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
-
         HorizontalGroup hBox = stage.getRoot().findActor("hBox");
         roomLabel= hBox.findActor("room");
         ownerLabel = hBox.findActor("owner");
@@ -58,8 +57,6 @@ public class LobbyScreen implements Screen {
 
         updateScreen();
 
-
-
         backBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -68,9 +65,19 @@ public class LobbyScreen implements Screen {
             }
         });
 
+        TextButton readyBtn = new TextButton("Ready",skin);
+        readyBtn.setPosition(550,15);
+        readyBtn.setHeight(30);
+        readyBtn.setWidth(100);
 
+        readyBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainController.goToGame();
+            }
+        });
 
-
+        stage.addActor(readyBtn);
 
     }
 
@@ -78,8 +85,6 @@ public class LobbyScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
 
         stage.act(delta);
         stage.draw();
