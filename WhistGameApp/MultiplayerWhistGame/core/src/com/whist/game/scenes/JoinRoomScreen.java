@@ -27,17 +27,15 @@ public class JoinRoomScreen implements Screen {
     private Stage stage;
     private List<Room> rooms = new ArrayList<>();
 
-
-
     public JoinRoomScreen(StartClient mainController) {
         this.mainController = mainController;
     }
 
     @Override
     public void show() {
+
         stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
         skin = new Skin(Gdx.files.internal("skin.json"));
-
         Gdx.input.setInputProcessor(stage);
 
 
@@ -47,7 +45,7 @@ public class JoinRoomScreen implements Screen {
         rooms.add(room);
         Table table = new Table();
         table.debug();
-        // table.setFillParent(true);
+
         table.center();
 
         table.defaults().expandX().fill().space(5f);
@@ -55,20 +53,16 @@ public class JoinRoomScreen implements Screen {
 
 
         ScrollPane scrollPane = new ScrollPane(table,skin);
-        scrollPane.setWidth(400f);
-        scrollPane.setWidth(400f);
-        scrollPane.setPosition(100,100);
+        scrollPane.setWidth(Constants.WORLD_WIDTH*2-200);
+        scrollPane.setHeight(Constants.WORLD_HEIGHT-100);
+        scrollPane.setPosition(50,50);
         scrollPane.debug();
 
 
         TextButton backBtn = new TextButton("Back",skin);
-        backBtn.setPosition(Constants.WORLD_WIDTH/2,Constants.WORLD_HEIGHT/10);
+        backBtn.setPosition(15,15);
         backBtn.setHeight(30);
         backBtn.setWidth(100);
-
-
-
-
 
         backBtn.addListener(new ChangeListener() {
             @Override
@@ -82,6 +76,7 @@ public class JoinRoomScreen implements Screen {
 
 
     }
+
 
     public void refreshTable(Table table, List<Room> rooms){
         for (final Room rm:rooms) {
@@ -100,7 +95,7 @@ public class JoinRoomScreen implements Screen {
             table.row();
         }
 
-    }
+
 
     @Override
     public void render(float delta) {
@@ -137,7 +132,25 @@ public class JoinRoomScreen implements Screen {
         skin.dispose();
     }
 
+    public void refreshTable(Table table, List<Room> rooms){
+        table.defaults().width(110);
+        for (Room rm:rooms) {
+            table.row().setActorHeight(20);
+            table.add(new Label(rm.getRoomID(),skin)).width(rm.getRoomID().length()*20);//!! NETESTAT
+            table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin)).width(50).expandX();
+            TextButton joinBtn = new TextButton("Join",skin);
+            joinBtn.setHeight(30);
+            table.add(joinBtn).width(100).pad(3);
 
+            joinBtn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    mainController.goToLobby();
+                }
+            });
+            table.row();
+        }
+    }
 
     public List<Room> getRooms() {
         return rooms;

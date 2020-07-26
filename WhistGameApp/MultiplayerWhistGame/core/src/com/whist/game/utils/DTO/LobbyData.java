@@ -14,6 +14,7 @@ public class LobbyData {
     List<String> players;
 
     public LobbyData(String roomName, List<String> players,String owner) {
+
         this.owner = owner;
         this.roomName = roomName;
         this.players = players;
