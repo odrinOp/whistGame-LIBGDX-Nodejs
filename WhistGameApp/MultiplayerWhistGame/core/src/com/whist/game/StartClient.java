@@ -112,8 +112,6 @@ public class StartClient extends Game  {
 
     private void configSocketEvents() {
 
-
-
         socket.on("lobbyData", new Emitter.Listener() {
             @Override
             public void call(Object... args) {

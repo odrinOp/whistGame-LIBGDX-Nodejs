@@ -92,12 +92,18 @@ public class GameScreen implements Screen {
     }
 
     public void renderCards(int x, int y,float rot){
-
         //TODO de generalizat
         // si de adaugat rotatie
         batch.begin();
         batch.draw(regions[0][0],x,y,0.0f,0.0f,regions[0][0].getRegionWidth(),regions[0][0].getRegionHeight(),1.0f,1.0f,rot);
         batch.end();
+    }
+
+    public void renderHand(int nrOfCArds, List<Card> cards){
+        float rot = -1* cards.size()*2;
+        for (Card cd:cards) {
+            renderCards((int)(Constants.WORLD_WIDTH/2 - cards.size()*20),5,rot+=2);
+        }
     }
 
     public void initGraphics(){
