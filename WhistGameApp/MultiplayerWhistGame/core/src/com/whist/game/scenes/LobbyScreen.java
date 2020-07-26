@@ -66,14 +66,14 @@ public class LobbyScreen implements Screen {
         });
 
         TextButton readyBtn = new TextButton("Ready",skin);
-        backBtn.setPosition(15,15);
-        backBtn.setHeight(30);
-        backBtn.setWidth(100);
+        readyBtn.setPosition(550,15);
+        readyBtn.setHeight(30);
+        readyBtn.setWidth(100);
 
-        backBtn.addListener(new ChangeListener() {
+        readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainController.goToMainMenu();
+                mainController.goToGame();
             }
         });
 
