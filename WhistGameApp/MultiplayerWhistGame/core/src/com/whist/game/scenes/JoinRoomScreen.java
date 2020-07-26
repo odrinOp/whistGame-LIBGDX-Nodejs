@@ -78,23 +78,8 @@ public class JoinRoomScreen implements Screen {
     }
 
 
-//    public void refreshTable(Table table, List<Room> rooms) {
-//        for (final Room rm : rooms) {
-//            table.add(new Label(rm.getRoomID(), skin));
-//            table.add(new Label("[" + rm.getNrOfPlayers() + "/" + rm.getMaxCapacity() + "]", skin));
-//            TextButton joinBtn = new TextButton("Join", skin);
-//            table.add(joinBtn);
-//            joinBtn.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//
-//                    mainController.goToCredentialsScreen(rm.getRoomID());
-//                }
-//            });
-//
-//            table.row();
-//        }
-//    }
+
+
 
 
     @Override
@@ -134,7 +119,7 @@ public class JoinRoomScreen implements Screen {
 
     public void refreshTable(Table table, List<Room> rooms){
         table.defaults().width(110);
-        for (Room rm:rooms) {
+        for (final Room rm:rooms) {
             table.row().setActorHeight(20);
             table.add(new Label(rm.getRoomID(),skin)).width(rm.getRoomID().length()*20);//!! NETESTAT
             table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin)).width(50).expandX();
@@ -145,7 +130,7 @@ public class JoinRoomScreen implements Screen {
             joinBtn.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    //mainController.goToLobby();
+                    mainController.goToCredentialsScreen(rm.getRoomID());
                 }
             });
             table.row();

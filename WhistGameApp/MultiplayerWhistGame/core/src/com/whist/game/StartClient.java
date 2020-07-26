@@ -51,15 +51,6 @@ public class StartClient extends Game  {
         super.render();
 
 
-        if(socket != null){
-            if(socket.connected() && state ==AppState.LOADING) {
-                state = AppState.MAIN_MENU;
-                changeState = true;
-            }
-        }
-
-
-
         if(changeState) {
             switch (state) {
                 case MAIN_MENU:
@@ -76,6 +67,7 @@ public class StartClient extends Game  {
                     break;
                 case LOADING:
                     setScreen(loadingScreen);
+                    break;
                 case GAME_SCREEN:
                     setScreen(gameScreen);
                     break;
@@ -99,9 +91,7 @@ public class StartClient extends Game  {
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
         loadingScreen = new LoadingScreen(this);
-
         gameScreen = new GameScreen(this);
-
         credentialsScreen = new CredentialsScreen(this);
 
         login();
