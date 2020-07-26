@@ -10,7 +10,7 @@ var Service = require('./serviceJS');
 var Deck = require('./deckJS');
 
 
-
+// lt -h http://serverless.social -p 8080 -s whistgamev2
 
 function testService() {
     var roomRepo = new RoomRepo();
@@ -213,7 +213,7 @@ io.on('connection',socket=>{
     socket.on('ready',()=>{
         var socketID = socket.id;
         
-        testingWhile(socket);
+        // starting the game;; just the owner can press this button;
     })
     socket.on('disconnect',()=>{
         try{
@@ -241,20 +241,4 @@ io.on('connection',socket=>{
     });
 
 });
-
-
-function testingWhile(socket){
-     var x = 0
-     console.log("Client " + socket.id + " is testing while");
-    var flag = true
-     while(flag){
-
-        socket.on('disconnect',()=>{
-            flag = false
-        })
-        x += 1;
-        if(x === 100)
-            x = 0;
-    }
-}
 
