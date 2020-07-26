@@ -135,8 +135,8 @@ public class LobbyScreen implements Screen {
 
         playersBox.clear();
 
-//        for(String player: players){
-//            playersBox.addActor(new Label(player,skin));
-//        }
+      for(String player: players){
+            playersBox.addActor(new Label(player,skin));
+        }
     }
 }
