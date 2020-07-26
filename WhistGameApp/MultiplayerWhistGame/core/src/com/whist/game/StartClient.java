@@ -124,7 +124,7 @@ public class StartClient extends Game  {
                 LobbyData lobbyData = LobbyData.convertFromJSON(data);
 
 
-                initLobbyScreen(lobbyData.getRoomName(),"",lobbyData.getPlayers());
+                initLobbyScreen(lobbyData.getRoomName(),lobbyData.getOwner(),lobbyData.getPlayers());
                 System.out.println(lobbyData.getPlayers());
                 state = AppState.LOBBY_ROOM;
                 changeState = true;
