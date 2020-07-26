@@ -14,6 +14,8 @@ public class LobbyData {
     List<String> players;
 
     public LobbyData(String roomName, List<String> players,String owner) {
+
+        this.owner = owner;
         this.roomName = roomName;
         this.players = players;
     }
@@ -24,6 +26,10 @@ public class LobbyData {
 
     public List<String> getPlayers() {
         return players;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public static LobbyData convertFromJSON(JSONObject data) {
