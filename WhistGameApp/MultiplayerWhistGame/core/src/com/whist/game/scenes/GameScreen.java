@@ -104,6 +104,10 @@ public class GameScreen implements Screen {
         for (Card cd:cards) {
             renderCards((int)(Constants.WORLD_WIDTH/2 - cards.size()*20),5,rot+=2);
         }
+
+        for(int i = 0; i<=7 ; i++){
+            renderCards((int)(Constants.WORLD_WIDTH/2 - i/2*20),10,i*2);
+        }
     }
 
     public void initGraphics(){
