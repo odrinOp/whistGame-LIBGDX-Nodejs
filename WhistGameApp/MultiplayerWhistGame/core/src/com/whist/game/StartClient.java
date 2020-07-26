@@ -290,6 +290,7 @@ public class StartClient extends Game  {
     public void goToGame() {
         state = AppState.GAME_SCREEN;
         changeState = true;
+    }
     public void goToCredentialsScreen(String roomID) {
         credentialsScreen.setRoomID(roomID);
         state = AppState.CREDENTIALS;

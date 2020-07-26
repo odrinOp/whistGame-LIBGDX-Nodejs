@@ -78,23 +78,23 @@ public class JoinRoomScreen implements Screen {
     }
 
 
-    public void refreshTable(Table table, List<Room> rooms){
-        for (final Room rm:rooms) {
-            table.add(new Label(rm.getRoomID(),skin));
-            table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin));
-            TextButton joinBtn = new TextButton("Join",skin);
-            table.add(joinBtn);
-            joinBtn.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-
-                    mainController.goToCredentialsScreen(rm.getRoomID());
-                }
-            });
-
-            table.row();
-        }
-
+//    public void refreshTable(Table table, List<Room> rooms) {
+//        for (final Room rm : rooms) {
+//            table.add(new Label(rm.getRoomID(), skin));
+//            table.add(new Label("[" + rm.getNrOfPlayers() + "/" + rm.getMaxCapacity() + "]", skin));
+//            TextButton joinBtn = new TextButton("Join", skin);
+//            table.add(joinBtn);
+//            joinBtn.addListener(new ChangeListener() {
+//                @Override
+//                public void changed(ChangeEvent event, Actor actor) {
+//
+//                    mainController.goToCredentialsScreen(rm.getRoomID());
+//                }
+//            });
+//
+//            table.row();
+//        }
+//    }
 
 
     @Override
@@ -145,7 +145,7 @@ public class JoinRoomScreen implements Screen {
             joinBtn.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    mainController.goToLobby();
+                    //mainController.goToLobby();
                 }
             });
             table.row();

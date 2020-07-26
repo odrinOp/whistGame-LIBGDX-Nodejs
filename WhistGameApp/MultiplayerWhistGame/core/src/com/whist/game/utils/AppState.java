@@ -8,7 +8,8 @@ public enum AppState {
     JOIN_ROOM,
     LOBBY_ROOM,
     LOADING,
-    CREDENTIALS;
+    CREDENTIALS,
+    GAME_SCREEN;
 
 
 
