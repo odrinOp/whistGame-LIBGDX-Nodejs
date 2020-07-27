@@ -7,61 +7,69 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ray3k.stripe.scenecomposer.SceneComposerStageBuilder;
 import com.whist.game.StartClient;
 import com.whist.game.utils.Constants;
 
-public class MainMenuScreen implements Screen {
-    Stage stage;
-    Skin skin;
-    StartClient mainController;
-    private final String TAG = MainMenuScreen.class.getSimpleName();
+import java.awt.*;
 
-    public MainMenuScreen(StartClient mainController) {
+public class CredentialsScreen implements Screen {
+    private String roomID = "";
+    private StartClient mainController;
+    private Stage stage;
+    private Skin skin;
+
+    public CredentialsScreen(StartClient mainController) {
         this.mainController = mainController;
     }
 
+    public void setRoomID(String roomID){
+        this.roomID = roomID;
+    }
+
+
     @Override
     public void show() {
-
         stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
         skin = new Skin(Gdx.files.internal("skin.json"));
 
         SceneComposerStageBuilder builder = new SceneComposerStageBuilder();
-        builder.build(stage,skin,Gdx.files.internal("mainScene.json"));
+        builder.build(stage,skin,Gdx.files.internal("joinRoomScene.json"));
+
         Gdx.input.setInputProcessor(stage);
-        //Add button listeners
 
-        TextButton createRoomBtn = stage.getRoot().findActor("createRoom");
-        TextButton joinRoomBtn = stage.getRoot().findActor("joinRoom");
-        TextButton exitBtn = stage.getRoot().findActor("exit");
 
-        createRoomBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log(TAG + "-" + actor.getName(),"Pressed");
-                mainController.goToCreateRoom();
-            }
-        });
+        VerticalGroup vBox = stage.getRoot().findActor("vBox");
+        final TextField nicknameField = vBox.findActor("nickname");
+        TextField roomField = vBox.findActor("room");
 
+        roomField.setText(roomID);
+        roomField.setDisabled(true);
+
+        TextButton joinRoomBtn = vBox.findActor("joinRoom");
         joinRoomBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log(TAG + "-" + actor.getName(), "Pressed");
-                mainController.getRooms();
+                String nickname = nicknameField.getText();
+                mainController.joinRoom(nickname,roomID);
+            }
+        });
+
+        TextButton backBtn = vBox.findActor("back");
+
+
+        backBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
                 mainController.goToJoinRoom();
             }
         });
 
-        exitBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log(TAG + "-" + actor.getName(), "Pressed" );
-                Gdx.app.exit();
-            }
-        });
     }
 
     @Override
@@ -69,13 +77,16 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
+
         stage.act(delta);
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height,true);
+        stage.getViewport().update(width,height,true);
+
     }
 
     @Override
@@ -95,8 +106,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
 
     }
 }

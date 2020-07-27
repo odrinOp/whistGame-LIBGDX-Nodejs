@@ -20,11 +20,13 @@ public class CreateRoomScreen implements Screen {
     Skin skin;
     StartClient mainController;
     private final String TAG = CreateRoomScreen.class.getSimpleName();
+    private boolean changedOnRoomField = false;
 
 
 
     public CreateRoomScreen(StartClient mainController) {
         this.mainController = mainController;
+
 
 
     }
@@ -33,6 +35,7 @@ public class CreateRoomScreen implements Screen {
     public void show() {
         stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
         skin = new Skin(Gdx.files.internal("skin.json"));
+        changedOnRoomField = false;
 
         SceneComposerStageBuilder builder = new SceneComposerStageBuilder();
         builder.build(stage,skin,Gdx.files.internal("createRoomScene.json"));
@@ -61,6 +64,27 @@ public class CreateRoomScreen implements Screen {
                 Gdx.app.log(TAG,"Nickname: " + nickname + "\t\t"  + "Room: " + room);
                 mainController.createRoom(nickname,room);
 
+            }
+        });
+
+        nicknameField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+                String nickname = nicknameField.getText();
+
+                if(changedOnRoomField)
+                    return;
+                if(nickname.equals(""))
+                    roomField.setText("");
+                else
+                    roomField.setText(nickname + "'s room");
+            }
+        });
+        roomField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                changedOnRoomField = true;
             }
         });
 

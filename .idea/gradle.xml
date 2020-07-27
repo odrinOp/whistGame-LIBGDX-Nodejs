@@ -4,9 +4,10 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/WhistGameApp/MultiplayerWhistGame" />
-        <option name="gradleHome" value="$PROJECT_DIR$/../../Gradle/gradle-2.4" />
+        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-2.4" />
         <option name="gradleJvm" value="11.0.4" />
         <option name="modules">
           <set>
@@ -17,7 +18,7 @@
             <option value="$PROJECT_DIR$/WhistGameApp/MultiplayerWhistGame/ios" />
           </set>
         </option>
-        <option name="useQualifiedModuleNames" value="true" />
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
