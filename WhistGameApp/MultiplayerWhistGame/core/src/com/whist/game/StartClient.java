@@ -36,10 +36,7 @@ public class StartClient extends Game  {
     LoadingScreen loadingScreen;
     GameScreen gameScreen;
 
-
-
     CredentialsScreen credentialsScreen;
-
 
     private Socket socket;
     private AppState state = AppState.LOADING;
@@ -80,9 +77,6 @@ public class StartClient extends Game  {
     }
 
 
-
-
-
     @Override
     public void create() {
 
@@ -96,7 +90,6 @@ public class StartClient extends Game  {
 
         login();
         setScreen(gameScreen);
-
 
     }
 
