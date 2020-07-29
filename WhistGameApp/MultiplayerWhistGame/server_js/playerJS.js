@@ -6,7 +6,6 @@ module.exports = class Player {
 
     toJSON(){
         return {
-            id:this.id,
             nickname:this.nickname
         };
     }

@@ -8,7 +8,7 @@ var Room = require('./roomJS');
 var RoomRepo = require('./roomRepo');
 var Service = require('./serviceJS');
 var Deck = require('./deckJS');
-
+var GameEngine = require('./GameEngine');
 
 
 
@@ -134,10 +134,10 @@ function testDeck(){
 
  //test();
 
-var roomRepo = new RoomRepo();
+let roomRepo = new RoomRepo();
 //console.log("Number of rooms: " + roomRepo.getSize());
 
-var service = new Service(roomRepo);
+let service = new Service(roomRepo);
 
 
 
@@ -154,14 +154,14 @@ io.on('connection',socket=>{
     socket.emit("connected");
 
     socket.on('createRoom',data=>{
-        var jsonData = {id: socket.id,nickname:data.nickname,roomID: data.roomID};
+        let jsonData = {id: socket.id,nickname:data.nickname,roomID: data.roomID};
         console.log('Player ' + data.nickname + 'want to create room ' +  data.room);
         try{
             
             service.createRoom(jsonData);
             socket.join(data.roomID);
 
-            var room = service.getRoomForPlayer(socket.id);
+            let room = service.getRoomForPlayer(socket.id);
             socket.emit("lobbyData",room.toJSON());
             console.log(room.toJSON());
 
@@ -173,13 +173,13 @@ io.on('connection',socket=>{
     });
 
     socket.on('joinRoom', data=>{
-        var jsonData = {id: socket.id,nickname:data.nickname,roomID: data.roomID};
+        let jsonData = {id: socket.id,nickname:data.nickname,roomID: data.roomID};
         console.log("Player " + data.nickname +" wants to enter to room " + data.roomID)
         try{
             service.joinRoom(jsonData);
             socket.join(data.roomID);
 
-            var room = service.getRoomForPlayer(socket.id);
+            let room = service.getRoomForPlayer(socket.id);
             io.to(data.roomID).emit("lobbyData",room.toJSON());
             console.log(room.toJSON());
             service.showStats();
@@ -190,7 +190,7 @@ io.on('connection',socket=>{
     });
 
     socket.on('getRoomsRQ',()=>{
-        var jsonData = service.getAllRooms();
+        let jsonData = service.getAllRooms();
         console.log('player with socketID: ' + socket.id + ' want to get info about all the rooms');
         console.log(jsonData);
         socket.emit('getRoomsRP',jsonData);
@@ -198,7 +198,7 @@ io.on('connection',socket=>{
 
     socket.on('leaveRoom',()=>{
         try{
-            var room = service.getRoomForPlayer(socket.id);
+            let room = service.getRoomForPlayer(socket.id);
             if(room != null){
                 service.leaveRoom(socket.id);
                 socket.leave(room.roomID);
@@ -210,15 +210,28 @@ io.on('connection',socket=>{
         }
     })
 
-    socket.on('ready',()=>{
-        var socketID = socket.id;
+    socket.on('startGame',()=>{
+        let socketID = socket.id;
+        console.log("player with socketID " + socketID + " started a game");
+        let room = service.getRoomForPlayer(socketID);
+
+        console.log(room);
+        room.createGameEngine();
+        //this.service.updateRoom();
+
+        let room1 = io.sockets.adapter.rooms['my_room'];
+        console.log(room1);
+        let players = room.getGameEngine().getPlayers();
+        console.log(players);
+        socket.to(room.roomID).emit("getPlayers",{msg: 'sugi pl'});
+
+
         
-        testingWhile(socket);
     })
     socket.on('disconnect',()=>{
         try{
 
-            var room = service.getRoomForPlayer(socket.id);
+            let room = service.getRoomForPlayer(socket.id);
             if (room != null)
                 {    
                     service.leaveRoom(socket.id);;
@@ -243,18 +256,4 @@ io.on('connection',socket=>{
 });
 
 
-function testingWhile(socket){
-     var x = 0
-     console.log("Client " + socket.id + " is testing while");
-    var flag = true
-     while(flag){
-
-        socket.on('disconnect',()=>{
-            flag = false
-        })
-        x += 1;
-        if(x === 100)
-            x = 0;
-    }
-}
 
