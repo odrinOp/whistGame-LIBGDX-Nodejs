@@ -3,6 +3,11 @@ module.exports = class RoomRepo{
     constructor(options) {
         this.rooms = [];
         this.createRoom(new Room("test",{locked : true}));
+        this.createRoom(new Room("test1",{locked : true}));
+        this.createRoom(new Room("test2",{locked : true}));
+        this.createRoom(new Room("test3",{locked : true}));
+        this.createRoom(new Room("test4",{locked : true}));
+        this.createRoom(new Room("test5",{locked : true}));
         //this.locked = true;
 
     }
@@ -13,7 +18,7 @@ module.exports = class RoomRepo{
             throw "The name of the room already exists!";
 
         this.rooms.push(room);
-        console.log("New Room Created!");
+        //console.log("New Room Created!");
     }
 
     getRoom(roomID){

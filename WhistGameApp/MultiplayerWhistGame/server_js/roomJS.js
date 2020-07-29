@@ -2,6 +2,8 @@ module.exports = class Room{
     constructor(id,options) {
         this.roomID = id;
         this.loggedPlayers = [];
+        
+        this.owner = null;
 
         this.MAX_CAPACITY = 6;
         if(options.MAX_CAPACITY != null)
@@ -27,6 +29,8 @@ module.exports = class Room{
         if(this.loggedPlayers.length === this.MAX_CAPACITY)
             throw "Room is full!";
 
+        if(this.owner == null)
+            this.owner = player;
 
         this.loggedPlayers.push(player);
     }
@@ -39,6 +43,16 @@ module.exports = class Room{
      */
     removePlayer(playerID){
         this.loggedPlayers = this.loggedPlayers.filter(value => value.id !== playerID);
+        
+        if(this.owner != null && this.owner.id === playerID){
+            this.owner = null;
+            this.chooseAnotherOwner();
+        }
+    }
+
+    chooseAnotherOwner(){
+        if(this.loggedPlayers.length > 0)
+            this.owner = this.loggedPlayers[0];
     }
 
     getSize(){
@@ -54,7 +68,8 @@ module.exports = class Room{
         return this.loggedPlayers.find(localPlayer => localPlayer.id === playerID);
 
     }
-
+    
+    
 
     toJSON(){
         var logged = []
@@ -65,7 +80,9 @@ module.exports = class Room{
         return {
             roomID: this.roomID,
             capacity: this.MAX_CAPACITY,
-            players: logged
+            players: logged,
+            owner:this.owner.nickname
+            
         };
     }
 
@@ -74,7 +91,7 @@ module.exports = class Room{
         return{
             roomID: this.roomID,
             capacity: this.MAX_CAPACITY,
-            players: loggedPlayers
+            players: loggedPlayers,
         };
     }
 
