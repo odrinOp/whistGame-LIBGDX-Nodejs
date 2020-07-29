@@ -89,7 +89,7 @@ public class StartClient extends Game  {
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(gameScreen);
+        setScreen(loadingScreen);
 
     }
 
@@ -146,9 +146,6 @@ public class StartClient extends Game  {
                     int numberOfRooms = Integer.parseInt(data.getString("num_of_rooms"));
 
                     System.out.println("int numberOfRooms = " + numberOfRooms);
-
-
-
                     List<Room> rooms = new ArrayList<>();
                     System.out.println();
                     JSONArray roomsJSONArray = data.getJSONArray("rooms");
@@ -158,25 +155,68 @@ public class StartClient extends Game  {
                         rm.setRoomID(roomsJSONArray.getJSONObject(i).getString("roomID"));
                         rm.setMaxCapacity(roomsJSONArray.getJSONObject(i).getInt("capacity"));
                         rooms.add(rm);
-
-
                     }
                     System.out.println("DONE GETTING ROOMS");
                     System.out.println(rooms);
                     joinRoomScreen.setRooms(rooms);
 
-
                     state = AppState.JOIN_ROOM;
                     changeState = true;
 
                 } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        socket.on("startGame", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("ConfigSocketEvents-startGame","Starting Game...");
+                JSONObject data = (JSONObject) args[0];
+                try{
+                    state = AppState.GAME_SCREEN;
+                    changeState = true;
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
     }
+
+//    nr|client		------->	server
+//------------------------------------------------------------------
+//        1|startGame		------->	get all players
+//
+// 2|getPlayers		<-------	send player order
+//
+// 3|getCards		<-------	send for every player cards
+//
+// 4|getBidRQ		<-------	send bid request for player
+//
+// 5|sendBidRP		------->	validate
+//
+// 6|getBidsOnTable 	<-------	send status of the table
+//
+// -----loop from 4 until every player placed their bids
+//
+// 7|getCardRQ		<-------	send card request for player
+//
+// 8|sendCardRP		------->	validate
+//
+// 9|getCardsOnTable 	<-------	send status of the table
+//
+//-----loop from 7 until all players placed their cards
+//
+//10|getWinner		<-------	decide winner
+//
+//-----loop from 7 until there are no cards left in hand for players
+//
+//11|getScore		<-------	calculate score
+//
+//-----loop from 2 until all rounds are completed
 
     private void initLobbyScreen(String roomName, String ownerName, List<String> playersName) {
             lobbyScreen.setRoomName(roomName);
@@ -279,7 +319,5 @@ public class StartClient extends Game  {
         credentialsScreen.setRoomID(roomID);
         state = AppState.CREDENTIALS;
         changeState = true;
-
-
     }
 }
