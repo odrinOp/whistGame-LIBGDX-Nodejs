@@ -288,4 +288,9 @@ public class StartClient extends Game  {
 
 
     }
+
+    public void setReadyStatus() {
+        socket.emit("ready");
+        goToGame();
+    }
 }
