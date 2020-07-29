@@ -73,7 +73,12 @@ public class LobbyScreen implements Screen {
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainController.setReadyStatus();
+
+               // mainController.setReadyStatus();
+
+                //mainController.goToGame();
+                Gdx.app.log("Credentials","Button Pressed");
+
             }
         });
 
