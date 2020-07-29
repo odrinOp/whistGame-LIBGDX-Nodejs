@@ -49,7 +49,7 @@ public class JoinRoomScreen implements Screen {
         refreshTable(table,this.rooms);
 
         ScrollPane scrollPane = new ScrollPane(table,skin);
-        scrollPane.setWidth(Constants.WORLD_WIDTH*2-200);
+        scrollPane.setWidth(Constants.WORLD_WIDTH-200);
         scrollPane.setHeight(Constants.WORLD_HEIGHT-100);
         scrollPane.setPosition(50,50);
         scrollPane.debug();
@@ -130,7 +130,7 @@ public class JoinRoomScreen implements Screen {
 
     public void refreshTable(Table table, List<Room> rooms){
         table.defaults().width(110);
-        for (Room rm:rooms) {
+        for (final Room rm:rooms) {
             table.row().setActorHeight(20);
             table.add(new Label(rm.getRoomID(),skin)).width(rm.getRoomID().length()*20);//!! NETESTAT
             table.add(new Label("[" + rm.getNrOfPlayers()+ "/" + rm.getMaxCapacity() +"]",skin)).width(50).expandX();
@@ -141,7 +141,7 @@ public class JoinRoomScreen implements Screen {
             joinBtn.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                   // mainController.goToLobby();
+                    mainController.goToCredentialsScreen(rm.getRoomID());
                 }
             });
             table.row();

@@ -31,6 +31,10 @@ public class LobbyScreen implements Screen {
     private Label ownerLabel;
     private VerticalGroup playersBox;
 
+    //ToDo START button for game master
+
+
+
     public LobbyScreen(StartClient mainController) {
         this.mainController = mainController;
 
@@ -65,7 +69,7 @@ public class LobbyScreen implements Screen {
             }
         });
 
-        TextButton readyBtn = new TextButton("Ready",skin);
+        TextButton readyBtn = new TextButton("START",skin);
         readyBtn.setPosition(550,15);
         readyBtn.setHeight(30);
         readyBtn.setWidth(100);
