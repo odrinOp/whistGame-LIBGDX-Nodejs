@@ -34,10 +34,9 @@ public class StartClient extends Game  {
     LobbyScreen lobbyScreen;
     JoinRoomScreen joinRoomScreen;
     LoadingScreen loadingScreen;
-
     GameScreen gameScreen;
-    CredentialsScreen credentialsScreen;
 
+    CredentialsScreen credentialsScreen;
 
     private Socket socket;
     private AppState state = AppState.LOADING;
@@ -47,9 +46,7 @@ public class StartClient extends Game  {
 
     @Override
     public void render() {
-
         super.render();
-
 
         if(changeState) {
             switch (state) {
@@ -80,9 +77,6 @@ public class StartClient extends Game  {
     }
 
 
-
-
-
     @Override
     public void create() {
 
@@ -95,7 +89,7 @@ public class StartClient extends Game  {
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(loadingScreen);
+        setScreen(gameScreen);
 
     }
 
