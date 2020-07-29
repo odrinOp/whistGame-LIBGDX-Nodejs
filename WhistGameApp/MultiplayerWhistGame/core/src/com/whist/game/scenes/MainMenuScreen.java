@@ -94,6 +94,7 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
+    //TODO asta nu se apeleaza automat! (din DOC)
     public void dispose() {
         stage.dispose();
         skin.dispose();

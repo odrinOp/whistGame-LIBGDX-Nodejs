@@ -1,16 +1,27 @@
 package com.whist.game.generics;
 
-/*
-Nu stiu daca e chiar necesasra ...
- */
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
+//TODO de extins Actor?
+public class Card extends Actor {
 
-public class Card {
     private String value;
 
-    Card(String val){
-        this.value = val;
+
+
+    public void setValue(String value) {
+        this.value = value;
     }
+
+    public Card(String val){
+        this.value = val;
+
+    }
+
+    public void render(){
+
+    }
+
 
     public String getValue() {
         return value;
