@@ -1,5 +1,7 @@
 package com.whist.game.generics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.whist.game.StartClient;
+import com.whist.game.scenes.GameScreen;
 
 public class Card extends Actor implements Comparable<Card>{
 
@@ -16,8 +20,10 @@ public class Card extends Actor implements Comparable<Card>{
     private static final float FOLLOW_MULTIPLIER = 5.0f;
     public Vector2 position ;// pozitia cartii
     public Vector2 originalPosition;
+
     boolean following = false;
     boolean goingBack = false;
+    public boolean choosed = false;
 
     Vector2 targetPosition = new Vector2(0f,0f);// finger position
     Vector2 velocity;// vector viteza al cartii
@@ -26,6 +32,10 @@ public class Card extends Actor implements Comparable<Card>{
     private int intSymbol; // asta da ordinea cartilor in mana
     private int value;
     private Actor cardActor;
+
+    GameScreen gameScreen;
+
+    //-----------------------------------------------------------------
 
     public String getSymbol() {
         return Symbol;
@@ -44,7 +54,7 @@ public class Card extends Actor implements Comparable<Card>{
         velocity = new Vector2(0,0);
     }
 
-    public Card(String val, TextureRegion[][] regions,float x, float y){
+    public Card(String val, TextureRegion[][] regions, float x, float y, final GameScreen gameScreen){
         String[] cardVal = val.split("-");
 
         position = new Vector2(x,y);
@@ -71,8 +81,11 @@ public class Card extends Actor implements Comparable<Card>{
         }
         cardNr = Integer.parseInt( cardVal[1]) - 2;
 
+        final Card thisCard = this;
+
         intSymbol = cardSimb;
         this.cardActor =  new Image(regions[cardSimb][cardNr]);
+        cardActor.setPosition(originalPosition.x,originalPosition.y);
         cardActor.setX(60);
         cardActor.setY(100);
         cardActor.setTouchable(Touchable.enabled);
@@ -89,7 +102,16 @@ public class Card extends Actor implements Comparable<Card>{
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
                 if (following ==  true){
                     targetPosition = new Vector2(cardActor.getX() + x,cardActor.getY() + y);
-                    System.out.println("touchDragged" + targetPosition.x + " " + targetPosition.y);
+                   // System.out.println("touchDragged" + targetPosition.x + " " + targetPosition.y);
+                }
+                if(following == true && targetPosition.y > Gdx.graphics.getHeight()/2){
+                    if(gameScreen.canChooseCard){
+                        System.out.println("[Card] : Gdx.height = " + Gdx.graphics.getHeight());
+                        originalPosition.y = Gdx.graphics.getHeight()/2;
+                        //ToDo ceva .emmit() pentru o singura carte
+                        //mainController.sendCard();
+                    }
+
                 }
                 goingBack = false;
             }
@@ -97,8 +119,8 @@ public class Card extends Actor implements Comparable<Card>{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 //super.touchUp(event, x, y, pointer, button);
-               // System.out.println("[current poz]: " + position.toString());
-                //System.out.println("[origin poz]: " + originalPosition.toString());
+                //System.out.println("[current poz]: " + position.toString());
+                // System.out.println("[origin poz]: " + originalPosition.toString());
                 targetPosition =  originalPosition;
                 following = false;
                 goingBack = true;
@@ -108,6 +130,7 @@ public class Card extends Actor implements Comparable<Card>{
 
         this.Symbol = cardVal[0];
         this.value = cardNr;
+        this.gameScreen = gameScreen;
     }
 
     public void render(){
@@ -121,11 +144,11 @@ public class Card extends Actor implements Comparable<Card>{
             velocity.y = FOLLOW_MULTIPLIER * followVector.y;
         }
         //TODO vezi ce faci cu asta
-//        if (goingBack) {
-//            Vector2 followVector = new Vector2(targetPosition.x - position.x, targetPosition.y - position.y);
-//            velocity.x = FOLLOW_MULTIPLIER * followVector.x;
-//            velocity.y = FOLLOW_MULTIPLIER * followVector.y;
-//        }
+        if (goingBack) {
+            Vector2 followVector = new Vector2(targetPosition.x - position.x, targetPosition.y - position.y);
+            velocity.x = FOLLOW_MULTIPLIER * followVector.x;
+            velocity.y = FOLLOW_MULTIPLIER * followVector.y;
+        }
         velocity.clamp(0, MAX_SPEED);
         velocity.x = velocity.x - delta *DRAG *velocity.x;
         velocity.y = velocity.y - delta *DRAG *velocity.y;
@@ -171,17 +194,26 @@ public class Card extends Actor implements Comparable<Card>{
     }
 
     @Override
+    //ToDo de revizitat asta (merge da' nu e perfecta)
     public int compareTo(Card card) {
         if(this.intSymbol < card.intSymbol){
             if(this.value < card.value){
-                return -1;
-            }
-            else{
                 return 1;
             }
+            else{
+                return -1;
+            }
         }else {
-           return -1;
+           return 1;
 
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "Symbol='" + Symbol + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

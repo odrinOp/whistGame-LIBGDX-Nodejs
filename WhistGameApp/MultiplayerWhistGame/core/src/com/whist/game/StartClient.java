@@ -89,7 +89,7 @@ public class StartClient extends Game  {
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(loadingScreen);
+        setScreen(gameScreen);
 
     }
 
@@ -169,14 +169,30 @@ public class StartClient extends Game  {
             }
         });
 
-        socket.on("startGame", new Emitter.Listener() {
+//        socket.on("startGame", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                Gdx.app.log("ConfigSocketEvents-startGame","Starting Game...");
+//                JSONObject data = (JSONObject) args[0];
+//                try{
+//                    state = AppState.GAME_SCREEN;
+//                    changeState = true;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
+        socket.on("getPlayers", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Gdx.app.log("ConfigSocketEvents-startGame","Starting Game...");
                 JSONObject data = (JSONObject) args[0];
                 try{
-                    state = AppState.GAME_SCREEN;
-                    changeState = true;
+
+
+                    System.out.println("[JSON DATA]" + data);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -188,7 +204,7 @@ public class StartClient extends Game  {
 
 //    nr|client		------->	server
 //------------------------------------------------------------------
-//        1|startGame		------->	get all players
+// 1|startGame		------->	get all players
 //
 // 2|getPlayers		<-------	send player order
 //
@@ -283,8 +299,6 @@ public class StartClient extends Game  {
         changeState = true;
     }
 
-
-
     @Override
     public void dispose() {
         super.dispose();
@@ -312,6 +326,7 @@ public class StartClient extends Game  {
     }
 
     public void goToGame() {
+        socket.emit("startGame");
         state = AppState.GAME_SCREEN;
         changeState = true;
     }
@@ -320,4 +335,5 @@ public class StartClient extends Game  {
         state = AppState.CREDENTIALS;
         changeState = true;
     }
+
 }
