@@ -1,16 +1,35 @@
+var GameEngine = require('./GameEngine');
+
 module.exports = class Room{
     constructor(id,options) {
         this.roomID = id;
         this.loggedPlayers = [];
-
+        
+        this.owner = null;
         this.MAX_CAPACITY = 6;
+        this.locked = false;
+
+        this.gameEngine = null;
+        this.configureOptions(options);
+        
+    };
+
+    configureOptions(options){
         if(options.MAX_CAPACITY != null)
             this.MAX_CAPACITY = options.MAX_CAPACITY;
 
-        this.locked = false;
         if(options.locked != null)
             this.locked = options.locked;
-    }
+
+    };
+
+    createGameEngine(){
+        this.gameEngine = new GameEngine(this.loggedPlayers);
+    };
+
+    getGameEngine(){
+        return this.gameEngine;
+    };
 
     /**
      * Add a new player to room
@@ -27,9 +46,11 @@ module.exports = class Room{
         if(this.loggedPlayers.length === this.MAX_CAPACITY)
             throw "Room is full!";
 
+        if(this.owner == null)
+            this.owner = player;
 
         this.loggedPlayers.push(player);
-    }
+    };
 
 
     /**
@@ -39,11 +60,21 @@ module.exports = class Room{
      */
     removePlayer(playerID){
         this.loggedPlayers = this.loggedPlayers.filter(value => value.id !== playerID);
-    }
+        
+        if(this.owner != null && this.owner.id === playerID){
+            this.owner = null;
+            this.chooseAnotherOwner();
+        }
+    };
+
+    chooseAnotherOwner(){
+        if(this.loggedPlayers.length > 0)
+            this.owner = this.loggedPlayers[0];
+    };
 
     getSize(){
         return this.loggedPlayers.length;
-    }
+    };
 
     /**
      * Verify if a player is part of the room
@@ -53,8 +84,9 @@ module.exports = class Room{
     playerExists(playerID){
         return this.loggedPlayers.find(localPlayer => localPlayer.id === playerID);
 
-    }
-
+    };
+    
+    
 
     toJSON(){
         var logged = []
@@ -65,17 +97,19 @@ module.exports = class Room{
         return {
             roomID: this.roomID,
             capacity: this.MAX_CAPACITY,
-            players: logged
+            players: logged,
+            owner:this.owner.nickname
+            
         };
-    }
+    };
 
     toJSON2(){
         var loggedPlayers = this.loggedPlayers.length;
         return{
             roomID: this.roomID,
             capacity: this.MAX_CAPACITY,
-            players: loggedPlayers
+            players: loggedPlayers,
         };
-    }
+    };
 
 }
