@@ -6,9 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.whist.game.StartClient;
 import com.whist.game.generics.Card;
@@ -58,6 +62,11 @@ public class GameScreen implements Screen {
 
     public List<Card> putDownCards = new ArrayList<>();
 
+    int nrOfCards = 8;
+    Slider bidSlider ;
+    Label bidVal ;
+    TextButton bidButton;
+
 
     public void init() {
 
@@ -80,7 +89,27 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
 
-        Slider bidSlider = new Slider(0f,8f,1, false, skin);
+        bidSlider = new Slider(0f,8f,1, false, skin);
+        bidVal = new Label( "[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]",skin);
+        bidButton =  new TextButton("Bid",skin);
+
+
+
+        bidVal.setPosition(Gdx.graphics.getWidth()/2 + bidSlider.getWidth()/2,Gdx.graphics.getHeight()/2);
+        bidSlider.setPosition(Gdx.graphics.getWidth()/2 - bidSlider.getWidth()/2,Gdx.graphics.getHeight()/2);
+        bidButton.setPosition(Gdx.graphics.getWidth()/2 ,Gdx.graphics.getHeight()/2 - bidSlider.getHeight()*2);
+        bidButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("[Game] Bid btn pressed");
+                //TODO mainController.sendBid() sau ceva...
+            }
+        });
+
+
+        stage.addActor(bidSlider);
+        stage.addActor(bidVal);
+        stage.addActor(bidButton);
 
         cardsStrList.add("h-2");
         cardsStrList.add("d-2");
@@ -94,12 +123,16 @@ public class GameScreen implements Screen {
         //System.out.println(cardsStrList);
 //        gen = new Card("h-4",regions,viewport.getScreenWidth()/2 ,100);
 
-        stage.addActor(bidSlider);
+
 //        stage.addActor(gen.getCardActor());
 
         hand = initCards(cardsStrList, 400);
         addCardsToScene(hand,stage);
 
+    }
+
+    public void updateBidText(){
+        bidVal.setText("[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]");
     }
 
     public List<Card> initCards(List<String> cards, float xPosition){
@@ -198,6 +231,7 @@ public class GameScreen implements Screen {
 
         batch.end();
         //TODO write a resize fucntion for all HUDCards
+        updateBidText();
         renderPutDownCards(delta,putDownCards);
         renderHUD(delta,hand);
         stage.act(delta);

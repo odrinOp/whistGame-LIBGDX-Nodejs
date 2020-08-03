@@ -126,7 +126,7 @@ public class Card extends Actor implements Comparable<Card>{
                 goingBack = true;
             }
         });
-        cardActor.debug();
+        //cardActor.debug();
 
         this.Symbol = cardVal[0];
         this.value = cardNr;
