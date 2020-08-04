@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
 
     public boolean canChooseCard = true;
 
-    public Queue<Player> players = new ArrayDeque<>();
+
     /*
     wait for cards from the server [! maini de una ]
     allow player to palace bet and wait for a signal from the server to emit the bet
@@ -57,10 +57,12 @@ public class GameScreen implements Screen {
     Card aux;
 
 
-    List<String> cardsStrList =  new ArrayList<>();
+    public List<String> cardsStrList =  new ArrayList<>();
     public List<Card> hand = new ArrayList<>();
 
     public List<Card> putDownCards = new ArrayList<>();
+    //Todo de verificat astia sa mearga bine;
+    public Queue<Player> players = new ArrayDeque<>();
 
     int nrOfCards = 8;
     Slider bidSlider ;
@@ -102,6 +104,8 @@ public class GameScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("[Game] Bid btn pressed");
+                //todo careful cu castul la int
+                mainController.bidRP((int)bidSlider.getValue());
                 //TODO mainController.sendBid() sau ceva...
             }
         });
@@ -111,14 +115,14 @@ public class GameScreen implements Screen {
         stage.addActor(bidVal);
         stage.addActor(bidButton);
 
-        cardsStrList.add("h-2");
-        cardsStrList.add("d-2");
-        cardsStrList.add("c-2");
-        cardsStrList.add("s-2");
-        cardsStrList.add("h-3");
-        cardsStrList.add("d-3");
-        cardsStrList.add("c-3");
-        cardsStrList.add("s-3");
+//        cardsStrList.add("h-2");
+//        cardsStrList.add("d-2");
+//        cardsStrList.add("c-2");
+//        cardsStrList.add("s-2");
+//        cardsStrList.add("h-3");
+//        cardsStrList.add("d-3");
+//        cardsStrList.add("c-3");
+//        cardsStrList.add("s-3");
 
         //System.out.println(cardsStrList);
 //        gen = new Card("h-4",regions,viewport.getScreenWidth()/2 ,100);
@@ -142,6 +146,8 @@ public class GameScreen implements Screen {
         Card card;
 
         if(cards.size() >8){
+            System.out.println( "NR OF CARDS " + cards.size());
+            System.out.println(cards);
             throw new IndexOutOfBoundsException("More then 8 cards Impossible");
         }
         Collections.sort(cards);
@@ -228,7 +234,6 @@ public class GameScreen implements Screen {
 //        renderOpponentsHandTop(3,(int)Constants.WORLD_WIDTH,(int)Constants.WORLD_HEIGHT-40,10);
 //        renderOpponentsHandRight(3,(int)Constants.WORLD_WIDTH*2,(int)Constants.WORLD_HEIGHT/2,10);
 //        renderOpponentsHandLeft(3,10,(int)Constants.WORLD_HEIGHT/2 + 80,10);
-
         batch.end();
         //TODO write a resize fucntion for all HUDCards
         updateBidText();
@@ -257,17 +262,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override

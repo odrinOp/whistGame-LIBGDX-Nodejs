@@ -3,6 +3,7 @@ package com.whist.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
+import com.whist.game.generics.Player;
 import com.whist.game.generics.Room;
 import com.whist.game.scenes.*;
 
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -89,7 +91,7 @@ public class StartClient extends Game  {
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(gameScreen);
+        setScreen(loadingScreen);
 
     }
 
@@ -169,19 +171,6 @@ public class StartClient extends Game  {
             }
         });
 
-//        socket.on("startGame", new Emitter.Listener() {
-//            @Override
-//            public void call(Object... args) {
-//                Gdx.app.log("ConfigSocketEvents-startGame","Starting Game...");
-//                JSONObject data = (JSONObject) args[0];
-//                try{
-//                    state = AppState.GAME_SCREEN;
-//                    changeState = true;
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
         socket.on("getPlayers", new Emitter.Listener() {
             @Override
@@ -189,9 +178,56 @@ public class StartClient extends Game  {
                 Gdx.app.log("ConfigSocketEvents-startGame","Starting Game...");
                 JSONObject data = (JSONObject) args[0];
                 try{
+                    List<String> playersName = new LinkedList<>();
+                    JSONArray playersJSON = data.getJSONArray("players");
+                    for(int i = 0; i< playersJSON.length(); i++){
+                        JSONObject tempJSON = playersJSON.getJSONObject(i);
+                        String nickname = tempJSON.getString("nickname");
+                        Player pl = new Player(nickname);
+                        //todo de pus astia in coada
+                        gameScreen.players.add(pl);
+                    }
+                    System.out.println("|PLAYERS| = " + gameScreen.players);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        socket.on("getCards", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                System.out.println(data);
 
-                    System.out.println("[JSON DATA]" + data);
+                String cardsStr = null;
+                try {
+                    cardsStr = data.getString("cards");
+
+                cardsStr = cardsStr.replace("[","");
+                cardsStr = cardsStr.replace("]","");
+                cardsStr =cardsStr.replace("\"","");
+
+                String atu = data.getString("atu");
+                System.out.println(atu);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                List<String> cards = Arrays.asList(cardsStr.split(","));
+                gameScreen.cardsStrList = cards;
+                System.out.println(cards);
+            }
+        });
+
+        socket.on("getBidRQ", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("ConfigSocketEvents-getBidRQ","Getting BidRQ...");
+                JSONObject data = (JSONObject) args[0];
+                try{
+
+                    //todo de pornit partea de bidding
 
 
                 } catch (Exception e) {
@@ -204,14 +240,15 @@ public class StartClient extends Game  {
 
 //    nr|client		------->	server
 //------------------------------------------------------------------
-// 1|startGame		------->	get all players
+//todo X 1|startGame	------->	get all players
 //
-// 2|getPlayers		<-------	send player order
+//todo X 2|getPlayers   <-------	send player order
 //
-// 3|getCards		<-------	send for every player cards
+//todo X 3|getCards		<-------	send for every player cards
 //
-// 4|getBidRQ		<-------	send bid request for player
+// todo 4|getBidRQ		<-------	send bid request for player
 //
+
 // 5|sendBidRP		------->	validate
 //
 // 6|getBidsOnTable 	<-------	send status of the table
@@ -245,7 +282,6 @@ public class StartClient extends Game  {
         Gdx.app.log(TAG,"Trying to connect to server: " + Constants.serverHTTP);
         try {
             socket = IO.socket(Constants.serverHTTP);
-            configSocketEvents();
             socket.connect();
 
             configSocketEvents();
@@ -285,7 +321,7 @@ public class StartClient extends Game  {
             joinRoomData.put("roomID",room);
 
             socket.emit("joinRoom",joinRoomData);
-            state = AppState.LOADING;
+            state = AppState.GAME_SCREEN;
             changeState = true;
 
         } catch (JSONException e) {
@@ -295,7 +331,7 @@ public class StartClient extends Game  {
 
     public void goToJoinRoom() {
         socket.emit("getRoomsRQ");
-        state = AppState.LOADING;
+        state = AppState.JOIN_ROOM;
         changeState = true;
     }
 
@@ -326,7 +362,6 @@ public class StartClient extends Game  {
     }
 
     public void goToGame() {
-        socket.emit("startGame");
         state = AppState.GAME_SCREEN;
         changeState = true;
     }
@@ -338,7 +373,19 @@ public class StartClient extends Game  {
 
 
     public void setReadyStatus() {
-        socket.emit("ready");
+        socket.emit("startGame");
         goToGame();
+    }
+
+    public void bidRP(int bid){
+
+        try {
+            JSONObject bidJson = new JSONObject();
+            String bidStr = Integer.toString(bid);
+            bidJson.put("bid", bidStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("sendBidRP",bid);
     }
 }
