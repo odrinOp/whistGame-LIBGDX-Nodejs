@@ -37,8 +37,6 @@ public class LobbyScreen implements Screen {
 
     public LobbyScreen(StartClient mainController) {
         this.mainController = mainController;
-
-
     }
 
     @Override
@@ -74,19 +72,23 @@ public class LobbyScreen implements Screen {
         readyBtn.setHeight(30);
         readyBtn.setWidth(100);
 
+        //todo de sters butonul de START pentru cine nu e owner
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-               // mainController.setReadyStatus();
+               mainController.setReadyStatus();
 
-                //mainController.goToGame();
                 Gdx.app.log("Credentials","Button Pressed");
 
             }
         });
 
-        stage.addActor(readyBtn);
+
+        //if(ownerLabel.getText().equals()){
+            stage.addActor(readyBtn);
+       // }
+
 
     }
 

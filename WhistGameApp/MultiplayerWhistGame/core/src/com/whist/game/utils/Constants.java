@@ -9,8 +9,8 @@ public class Constants {
 
     public final static float CARD_HAND_Y = 5;
 
-    public final static String serverHTTP = "https://whistgamev2.serverless.social";
-    //public final static String serverHTTP = "http://localhost:8080";
+   public final static String serverHTTP = "https://whistgame.serverless.social";
+   // public final static String serverHTTP = "http://localhost:8080";
 
 
 }
