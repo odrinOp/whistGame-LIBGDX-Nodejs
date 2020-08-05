@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.whist.game.StartClient;
 import com.whist.game.generics.Card;
 import com.whist.game.generics.Player;
@@ -24,12 +25,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
-public class GameScreen implements Screen {
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.min;
+import static java.lang.Math.sqrt;
 
+public class GameScreen implements Screen {
     float screenWidth = 0;
     float screenHeight = 0;
 
-    ExtendViewport viewport;
+    ScreenViewport viewport;
     Stage biddingStage;
     Stage stage;
     Skin skin;
@@ -84,9 +89,9 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         System.out.println("[GameScreen] : Show");
-        viewport = new ExtendViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
-        stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
-        biddingStage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
+        viewport = new ScreenViewport();
+        stage = new Stage(viewport);
+
         skin = new Skin(Gdx.files.internal("skin.json"));
         Gdx.input.setInputProcessor(stage);
 
@@ -97,9 +102,9 @@ public class GameScreen implements Screen {
 
 
 
-        bidVal.setPosition(Gdx.graphics.getWidth()/2 + bidSlider.getWidth()/2,Gdx.graphics.getHeight()/2);
-        bidSlider.setPosition(Gdx.graphics.getWidth()/2 - bidSlider.getWidth()/2,Gdx.graphics.getHeight()/2);
-        bidButton.setPosition(Gdx.graphics.getWidth()/2 ,Gdx.graphics.getHeight()/2 - bidSlider.getHeight()*2);
+        bidVal.setPosition(screenWidth/2 + bidSlider.getWidth()/2,screenHeight/2);
+        bidSlider.setPosition(screenWidth/2 - bidSlider.getWidth()/2,screenHeight/2);
+        bidButton.setPosition(screenWidth/2 ,screenHeight/2 - bidSlider.getHeight()*2);
         bidButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -115,22 +120,17 @@ public class GameScreen implements Screen {
         stage.addActor(bidVal);
         stage.addActor(bidButton);
 
-//        cardsStrList.add("h-2");
-//        cardsStrList.add("d-2");
-//        cardsStrList.add("c-2");
-//        cardsStrList.add("s-2");
-//        cardsStrList.add("h-3");
-//        cardsStrList.add("d-3");
-//        cardsStrList.add("c-3");
+        cardsStrList.add("h-2");
+        cardsStrList.add("d-2");
+        cardsStrList.add("c-2");
+        cardsStrList.add("s-2");
+        cardsStrList.add("h-3");
+        cardsStrList.add("d-3");
+        cardsStrList.add("c-3");
 //        cardsStrList.add("s-3");
 
-        //System.out.println(cardsStrList);
-//        gen = new Card("h-4",regions,viewport.getScreenWidth()/2 ,100);
 
-
-//        stage.addActor(gen.getCardActor());
-
-        hand = initCards(cardsStrList, 400);
+        hand = initCards(cardsStrList);
         addCardsToScene(hand,stage);
 
     }
@@ -139,7 +139,7 @@ public class GameScreen implements Screen {
         bidVal.setText("[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]");
     }
 
-    public List<Card> initCards(List<String> cards, float xPosition){
+    public List<Card> initCards(List<String> cards){
         float rot = cards.size()*5/2;
         int i = cards.size()*40/2;
         List<Card> ret = new ArrayList<>();
@@ -148,19 +148,20 @@ public class GameScreen implements Screen {
         if(cards.size() >8){
             System.out.println( "NR OF CARDS " + cards.size());
             System.out.println(cards);
-            throw new IndexOutOfBoundsException("More then 8 cards Impossible");
+            //throw new IndexOutOfBoundsException("More then 8 cards Impossible");
         }
         Collections.sort(cards);
 
         //ToDo gen ar merge si validate
         for (String str:cards) {
-            card =  new Card(str,regions,xPosition - i,Constants.CARD_HAND_Y,this);
+            card =  new Card(str,regions,screenWidth - i,Constants.CARD_HAND_Y,this);
             ret.add(card);
             i -= 40;
             //System.out.println("Screen width" + screenWidth);
         }
         return ret;
     }
+
 
     public void addCardsToScene(List<Card> cards,Stage stage){
         for (Card crd:cards) {
@@ -173,7 +174,7 @@ public class GameScreen implements Screen {
     public void renderHUD(float delta, List<Card> cards){
         for (Card crd:cards) {
             crd.update(delta,viewport);
-            if(crd.originalPosition.y >= Gdx.graphics.getHeight()/2){
+            if(crd.originalPosition.y >= screenHeight/2){
                 if(crd.choosed == false){
                     crd.choosed = true;
                     canChooseCard = false;
@@ -186,6 +187,7 @@ public class GameScreen implements Screen {
         hand.remove(aux);
 
     }
+
     public void renderPutDownCards(float delta, List<Card> putDownCards){
         //System.out.println("[renderPutDownCards]" + putDownCards.size());
         //Todo de randat astea la coordonate prestabilite
@@ -249,13 +251,50 @@ public class GameScreen implements Screen {
         regions = TextureRegion.split(cardSprite, 81, 117);
     }
 
+    public void resizeHUD(){
+        float width = min(screenHeight,screenWidth) /4 * 0.6f;
+        float height = min(screenHeight,screenWidth) /4;
+        float xOffset;
+        float rotOffset = 3;
+        float rot =  hand.size()/2 * rotOffset;
+        if (screenHeight > screenWidth){
+            xOffset = screenWidth/12;
+        }else{
+            xOffset = screenWidth/20;
+        }
+        float x = screenWidth/2 - xOffset*hand.size()/2 + xOffset/2;
+        float y;
+        //cerc
+        float Cy = -screenHeight *90/100;
+        float Cx = screenWidth/2;
+        float R =  screenHeight;
+
+
+        for (Card crd :hand) {
+            y = (float) (sqrt(abs(R*R - (x-Cx)*(x-Cx))) + Cy);
+            crd.getCardActor().setWidth(width);
+            crd.getCardActor().setHeight(height);
+            crd.getCardActor().setOriginX(width/2);
+            crd.rePosition(x -crd.getCardActor().getWidth()/4,y);
+            crd.setRot(rot);
+            x += xOffset;
+            rot -= rotOffset;
+        }
+    }
+
     //ToDo asta da rezolutia ferestrei calumea
     @Override
     public void resize(int width, int height) {
-        System.out.println("[GameScreen] : resize");
+       // System.out.println("[GameScreen] : resize");
         screenHeight = height;
         screenWidth = width;
-        System.out.println("[GameScreen] resize : width=" + width + "|" + " height=" + height);
+        System.out.println("[GameScreen] resize : width=" + screenWidth + "|" + " height=" + screenHeight);
+
+        bidVal.setPosition(screenWidth/2 + bidSlider.getWidth()/2,screenHeight/2);
+        bidSlider.setPosition(screenWidth/2 - bidSlider.getWidth()/2,screenHeight/2);
+        bidButton.setPosition(screenWidth/2 ,screenHeight/2 - bidSlider.getHeight()*2);
+        resizeHUD();
+
         viewport.update(width, height, true);
         init();
     }
@@ -290,8 +329,16 @@ public class GameScreen implements Screen {
         float rot = cards.size()*5/2;
         int i = 0;
         for (Card cd:cards) {
-            renderCard(cd,(int)(Constants.WORLD_WIDTH - cards.size()*20 + i),5,rot-=5);
+            renderCard(cd,(int)(screenWidth - cards.size()*20 + i),5,rot-=5);
             i+=25;
         }
+    }
+
+    public float getScreenWidth() {
+        return screenWidth;
+    }
+
+    public float getScreenHeight() {
+        return screenHeight;
     }
 }
