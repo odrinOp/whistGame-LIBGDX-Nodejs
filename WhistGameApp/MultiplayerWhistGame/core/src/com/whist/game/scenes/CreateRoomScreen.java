@@ -27,13 +27,11 @@ public class CreateRoomScreen implements Screen {
     public CreateRoomScreen(StartClient mainController) {
         this.mainController = mainController;
 
-
-
     }
 
     @Override
     public void show() {
-        stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
+        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
         skin = new Skin(Gdx.files.internal("skin.json"));
         changedOnRoomField = false;
 

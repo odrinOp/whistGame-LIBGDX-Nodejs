@@ -91,7 +91,7 @@ public class StartClient extends Game  {
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(loadingScreen);
+        setScreen(gameScreen);
 
     }
 
@@ -215,7 +215,7 @@ public class StartClient extends Game  {
                 }
 
                 List<String> cards = Arrays.asList(cardsStr.split(","));
-                gameScreen.cardsStrList = cards;
+               // gameScreen.cardsStrList = cards;
                 System.out.println(cards);
             }
         });
@@ -240,36 +240,32 @@ public class StartClient extends Game  {
 
 //    nr|client		------->	server
 //------------------------------------------------------------------
-//todo X 1|startGame	------->	get all players
+// 1|startGame	  ------->	get all players
+// 2|getPlayers   <-------	send player order
+//3|getCards		<-------	send for every player cards
+//4|getBidRQ		<-------	send bid request for player
 //
-//todo X 2|getPlayers   <-------	send player order
+// todo 5|sendBidRP		------->	validate
 //
-//todo X 3|getCards		<-------	send for every player cards
+// todo 6|getBidsOnTable 	<-------	send status of the table
 //
-// todo 4|getBidRQ		<-------	send bid request for player
+// todo -----loop from 4 until every player placed their bids
 //
-
-// 5|sendBidRP		------->	validate
+// todo 7|getCardRQ		<-------	send card request for player
 //
-// 6|getBidsOnTable 	<-------	send status of the table
+// todo 8|sendCardRP		------->	validate
 //
-// -----loop from 4 until every player placed their bids
+// todo 9|getCardsOnTable 	<-------	send status of the table
 //
-// 7|getCardRQ		<-------	send card request for player
+// todo -----loop from 7 until all players placed their cards
 //
-// 8|sendCardRP		------->	validate
+// todo 10|getWinner		<-------	decide winner
 //
-// 9|getCardsOnTable 	<-------	send status of the table
+// todo -----loop from 7 until there are no cards left in hand for players
 //
-//-----loop from 7 until all players placed their cards
+// todo 11|getScore		<-------	calculate score
 //
-//10|getWinner		<-------	decide winner
-//
-//-----loop from 7 until there are no cards left in hand for players
-//
-//11|getScore		<-------	calculate score
-//
-//-----loop from 2 until all rounds are completed
+// todo -----loop from 2 until all rounds are completed
 
     private void initLobbyScreen(String roomName, String ownerName, List<String> playersName) {
             lobbyScreen.setRoomName(roomName);

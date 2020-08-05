@@ -86,8 +86,8 @@ public class Card extends Actor implements Comparable<Card>{
         intSymbol = cardSimb;
         this.cardActor =  new Image(regions[cardSimb][cardNr]);
         cardActor.setPosition(originalPosition.x,originalPosition.y);
-        cardActor.setX(60);
-        cardActor.setY(100);
+//        cardActor.setX(60);
+//        cardActor.setY(200);
         cardActor.setTouchable(Touchable.enabled);
         cardActor.addListener(new DragListener() {
             @Override
@@ -184,6 +184,8 @@ public class Card extends Actor implements Comparable<Card>{
         cardActor.setY(y);
     }
 
+
+    // se face in sens trigonometric
     public void setRot(float rot){
         cardActor.setRotation(rot);
     }
@@ -191,6 +193,13 @@ public class Card extends Actor implements Comparable<Card>{
     public void setPosition(float x, float y){
         cardActor.setX(x);
         cardActor.setY(y);
+    }
+
+    public void rePosition(float x, float y){
+        this.originalPosition.x = x;
+        this.originalPosition.y = y;
+        this.position.x = x;
+        this.position.y = y;
     }
 
     @Override

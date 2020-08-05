@@ -33,7 +33,7 @@ public class JoinRoomScreen implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
+        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
         skin = new Skin(Gdx.files.internal("skin.json"));
         Gdx.input.setInputProcessor(stage);
 
@@ -49,8 +49,8 @@ public class JoinRoomScreen implements Screen {
         refreshTable(table,this.rooms);
 
         ScrollPane scrollPane = new ScrollPane(table,skin);
-        scrollPane.setWidth(Constants.WORLD_WIDTH-200);
-        scrollPane.setHeight(Constants.WORLD_HEIGHT-100);
+        scrollPane.setWidth(Gdx.graphics.getWidth()-200);
+        scrollPane.setHeight(Gdx.graphics.getHeight()-100);
         scrollPane.setPosition(50,50);
         scrollPane.debug();
 
@@ -72,27 +72,6 @@ public class JoinRoomScreen implements Screen {
 
     }
 
-
-//    public void refreshTable(Table table, List<Room> rooms) {
-//        for (final Room rm : rooms) {
-//            table.add(new Label(rm.getRoomID(), skin));
-//            table.add(new Label("[" + rm.getNrOfPlayers() + "/" + rm.getMaxCapacity() + "]", skin));
-//            TextButton joinBtn = new TextButton("Join", skin);
-//            table.add(joinBtn);
-//            joinBtn.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//
-//                    mainController.goToCredentialsScreen(rm.getRoomID());
-//                }
-//            });
-//
-//            table.row();
-//        }
-//    }
-
-
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.8f,0.8f, 0.8f, 1.0f);
@@ -104,6 +83,8 @@ public class JoinRoomScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        //todo schimba constantele cu rezolutia din resize
+        //todo de facut la tot resize
         stage.getViewport().update(width, height,true);
     }
 

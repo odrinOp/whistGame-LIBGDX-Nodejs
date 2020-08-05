@@ -41,7 +41,7 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ExtendViewport(Constants.WORLD_WIDTH,Constants.WORLD_HEIGHT));
+        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
         skin = new Skin(Gdx.files.internal("skin.json"));
 
         SceneComposerStageBuilder builder = new SceneComposerStageBuilder();
