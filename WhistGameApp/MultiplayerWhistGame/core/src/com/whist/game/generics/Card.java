@@ -90,6 +90,7 @@ public class Card extends Actor implements Comparable<Card>{
 //        cardActor.setY(200);
         cardActor.setTouchable(Touchable.enabled);
         cardActor.addListener(new DragListener() {
+            //todo de resetat rotatia la touchUp/touchDown
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 targetPosition = new Vector2(cardActor.getX() + x, cardActor.getY() + y);
@@ -106,7 +107,7 @@ public class Card extends Actor implements Comparable<Card>{
                 }
                 if(following == true && targetPosition.y > Gdx.graphics.getHeight()/2){
                     if(gameScreen.canChooseCard){
-                        System.out.println("[Card] : Gdx.height = " + Gdx.graphics.getHeight());
+                        //System.out.println("[Card] : Gdx.height = " + Gdx.graphics.getHeight());
                         originalPosition.y = Gdx.graphics.getHeight()/2;
                         //ToDo ceva .emmit() pentru o singura carte
                         //mainController.sendCard();
@@ -155,7 +156,7 @@ public class Card extends Actor implements Comparable<Card>{
 
         position.x = position.x + delta * velocity.x;
         position.y = position.y + delta * velocity.y;
-        collideWithWalls(viewport.getWorldWidth(),viewport.getWorldHeight());
+        //collideWithWalls(viewport.getWorldWidth(),viewport.getWorldHeight());
 
         cardActor.setPosition(position.x,position.y);
     }
