@@ -3,9 +3,14 @@ package com.whist.game.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+
+
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -13,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.whist.game.StartClient;
 import com.whist.game.generics.Card;
@@ -26,26 +30,26 @@ import java.util.List;
 import java.util.Queue;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.floor;
 import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
 
 public class GameScreen implements Screen {
+
     float screenWidth = 0;
     float screenHeight = 0;
 
     ScreenViewport viewport;
-    Stage biddingStage;
     Stage stage;
     Skin skin;
     StartClient mainController;
     private SpriteBatch batch;
     private TextureRegion[][] regions;
-    private TextureRegion cardBack;
     Texture cardSprite = new Texture("cardSprite.gif");
 
-    public boolean canChooseCard = true;
 
+
+
+    public boolean canChooseCard = true;
 
     /*
     wait for cards from the server [! maini de una ]
@@ -57,21 +61,19 @@ public class GameScreen implements Screen {
     //ar fi bulletProofCode si destul de simplu de folosit
     // sau am putea sa incercam un slider
 
-    Card[] crd;
-    Card gen;
     Card aux;
-
 
     public List<String> cardsStrList =  new ArrayList<>();
     public List<Card> hand = new ArrayList<>();
-
     public List<Card> putDownCards = new ArrayList<>();
     //Todo de verificat astia sa mearga bine;
+
     public Queue<Player> players = new ArrayDeque<>();
 
     int nrOfCards = 8;
-    Slider bidSlider ;
-    Label bidVal ;
+
+    Slider bidSlider;
+    Label bidVal;
     TextButton bidButton;
 
 
@@ -79,28 +81,11 @@ public class GameScreen implements Screen {
 
     }
 
-    public GameScreen(StartClient mainController){
-        System.out.println("[GameScreen] : Constructor");
-        batch = new SpriteBatch();
-        initGraphics();
-        this.mainController=mainController;
-    }
-
-    @Override
-    public void show() {
-        System.out.println("[GameScreen] : Show");
-        viewport = new ScreenViewport();
-        stage = new Stage(viewport);
-
-        skin = new Skin(Gdx.files.internal("skin.json"));
-        Gdx.input.setInputProcessor(stage);
-
+    void initBidHuUD(){
 
         bidSlider = new Slider(0f,8f,1, false, skin);
         bidVal = new Label( "[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]",skin);
         bidButton =  new TextButton("Bid",skin);
-
-
 
         bidVal.setPosition(screenWidth/2 + bidSlider.getWidth()/2,screenHeight/2);
         bidSlider.setPosition(screenWidth/2 - bidSlider.getWidth()/2,screenHeight/2);
@@ -114,11 +99,37 @@ public class GameScreen implements Screen {
                 //TODO mainController.sendBid() sau ceva...
             }
         });
+    }
+
+    public void initGraphics(){
+        //cardBack = new TextureRegion(cardSprite,648,0,587,81);
+        regions = TextureRegion.split(cardSprite, 81, 117);
+    }
+
+    public GameScreen(StartClient mainController){
+        System.out.println("[GameScreen] : Constructor");
+        batch = new SpriteBatch();
+        initGraphics();
+        this.mainController=mainController;
+    }
+
+    @Override
+    public void show() {
+        //todo de adaugat un label cu numarul de playeri sus in dreapta
+        hand.clear();
+        System.out.println("[GameScreen] : Show");
+        viewport = new ScreenViewport();
+        stage = new Stage(viewport);
+
+        skin = new Skin(Gdx.files.internal("skin.json"));
+        Gdx.input.setInputProcessor(stage);
 
 
-        stage.addActor(bidSlider);
-        stage.addActor(bidVal);
-        stage.addActor(bidButton);
+        Texture texture = new Texture(Gdx.files.internal("OCRAsrd.png"));
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        BitmapFont font = new BitmapFont(Gdx.files.internal("OCRAsrd.fnt"), new TextureRegion(texture), false);
+
+        //putDownCards.add(new Card("h-12",regions,screenWidth/2 ,screenHeight/2,this));
 
         cardsStrList.add("h-2");
         cardsStrList.add("d-2");
@@ -128,18 +139,34 @@ public class GameScreen implements Screen {
         cardsStrList.add("d-3");
         cardsStrList.add("c-3");
 //        cardsStrList.add("s-3");
+        Player hudi =  new Player("Hudy",8);
+        Player odr  =  new Player("Odrin",8);
+        Player hudi2  =  new Player("Hudy2",8);
 
+        players.add(hudi);
+        players.add(odr);
+        players.add(hudi2);
+
+
+//        Card card =  new Card("b-2",regions,screenWidth/2,screenHeight/2,this);
+
+        initBidHuUD();
+        initOpponetCards(players);
+
+       // System.out.println("put down cards  = " + putDownCards);
 
         hand = initCards(cardsStrList);
+
         addCardsToScene(hand,stage);
+        addCardsToScene(putDownCards,stage);
+
+       // stage.addActor(bidSlider);
+        //stage.addActor(bidVal);
+       // stage.addActor(bidButton);
+        //stage.addActor(card.getCardActor());
 
     }
-
-    public void updateBidText(){
-        bidVal.setText("[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]");
-    }
-
-    public List<Card> initCards(List<String> cards){
+     List<Card> initCards(List<String> cards){
         float rot = cards.size()*5/2;
         int i = cards.size()*40/2;
         List<Card> ret = new ArrayList<>();
@@ -162,6 +189,29 @@ public class GameScreen implements Screen {
         return ret;
     }
 
+    //todo coada de plyeri tebuie initializate bine
+    void initOpponetCards(Queue<Player> players){
+        Card card;
+        for (Player pl : players) {
+            for(int i = 0; i< nrOfCards; i++){
+                card =  new Card("b-2",regions,screenWidth/2,screenHeight*9/10,this);
+                card.getCardActor().setOriginX(card.getCardActor().getWidth()/2);
+                pl.cards.add(card);
+                //todo vezi ce faci cu asta
+               // card.getCardActor().setTouchable(Touchable.disabled);
+                stage.addActor(card.getCardActor());
+            }
+            System.out.println(pl.cards);
+        }
+    }
+
+    void updateOpponents(float delta){
+        for (Player pl : players) {
+            for (Card crd : pl.cards) {
+                crd.update(delta,viewport);
+            }
+        }
+    }
 
     public void addCardsToScene(List<Card> cards,Stage stage){
         for (Card crd:cards) {
@@ -177,91 +227,73 @@ public class GameScreen implements Screen {
             if(crd.originalPosition.y >= screenHeight/2){
                 if(crd.choosed == false){
                     crd.choosed = true;
-                    canChooseCard = false;
+                    //todo de pus asta false
+                    canChooseCard = true;
                     aux = crd;
-                    putDownCards.add(crd);
+                    putDownCard(aux);
                     System.out.println("[GameScreen] : Card choosed = " + crd.toString() + " " + crd.originalPosition.y );
                 }
             }
         }
         hand.remove(aux);
-
     }
 
     public void renderPutDownCards(float delta, List<Card> putDownCards){
-        //System.out.println("[renderPutDownCards]" + putDownCards.size());
-        //Todo de randat astea la coordonate prestabilite
-        if(putDownCards.size() > 0){
             for (Card crd:putDownCards) {
                 crd.update(delta,viewport);
             }
-        }
     }
 
-
-    public void renderCard(Card card, int x, int y,float rot){
-//        String[] cardVal = card.getValue().split("-");
-//        int cardSimb=0;
-//        int cardNr;
-//
-//        if(cardVal[0].equals("h")){
-//            cardSimb = 0;
-//        }
-//        if(cardVal[0].equals("d")){
-//            cardSimb = 1;
-//        }
-//        if(cardVal[0].equals("c")){
-//            cardSimb = 2;
-//        }
-//        if(cardVal[0].equals("s")){
-//            cardSimb = 3;
-//        }
-//        cardNr = Integer.parseInt( cardVal[1]) - 2;
-//
-//        //batch.draw(regions[0][0],x,y,0.0f,0.0f,regions[0][0].getRegionWidth(),regions[0][0].getRegionHeight(),1.0f,1.0f,rot);
-//        batch.draw(regions[cardSimb][cardNr],x,y,0.0f,0.0f,regions[cardSimb][cardNr].getRegionWidth(),regions[cardSimb][cardNr].getRegionHeight(),1.0f,1.0f,rot);
-
+    void putDownCard(Card card){
+        card.getCardActor().setOriginX(card.getCardActor().getWidth()/2);
+        System.out.println(screenHeight);
+        card.rePosition((float)screenWidth/2,(float)screenHeight/2);
+        card.setRot((putDownCards.size() - 1)*50);
+        putDownCards.add(card);
     }
 
     @Override
     public void render(float delta) {
-        //System.out.println("[GameScreen] : Render");
+
         viewport.apply();
         Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-//        renderCard(card,10,10,-15);
-//        renderHand(cards);
-//        renderOpponentsHandTop(3,(int)Constants.WORLD_WIDTH,(int)Constants.WORLD_HEIGHT-40,10);
-//        renderOpponentsHandRight(3,(int)Constants.WORLD_WIDTH*2,(int)Constants.WORLD_HEIGHT/2,10);
-//        renderOpponentsHandLeft(3,10,(int)Constants.WORLD_HEIGHT/2 + 80,10);
-        batch.end();
+
         //TODO write a resize fucntion for all HUDCards
         updateBidText();
+
         renderPutDownCards(delta,putDownCards);
         renderHUD(delta,hand);
+        updateOpponents(delta);
+
         stage.act(delta);
         stage.draw();
 
     }
 
-    public void initGraphics(){
-        cardBack = new TextureRegion(cardSprite,648,0,587,81);
-        regions = TextureRegion.split(cardSprite, 81, 117);
+    void updateBidText(){
+        bidVal.setText("[" + (int)bidSlider.getValue() + "/" + nrOfCards + "]");
     }
 
+//todo resize si put down cards
     public void resizeHUD(){
+        boolean portrait = false;
+        boolean landscape = false;
         float width = min(screenHeight,screenWidth) /4 * 0.6f;
         float height = min(screenHeight,screenWidth) /4;
         float xOffset;
         float rotOffset = 3;
         float rot =  hand.size()/2 * rotOffset;
+
         if (screenHeight > screenWidth){
             xOffset = screenWidth/12;
+            portrait = true;
         }else{
             xOffset = screenWidth/20;
+            landscape = true;
         }
+
         float x = screenWidth/2 - xOffset*hand.size()/2 + xOffset/2;
         float y;
         //cerc
@@ -280,9 +312,86 @@ public class GameScreen implements Screen {
             x += xOffset;
             rot -= rotOffset;
         }
+
+        for (Card crd :putDownCards) {
+            crd.getCardActor().setWidth(width);
+            crd.getCardActor().setHeight(height);
+            crd.getCardActor().setOriginX(width/2);
+            crd.rePosition(screenWidth/2,screenHeight/2);
+        }
+
+        bidSlider.setWidth(screenWidth/4);
+        bidSlider.setDebug(true);
+        bidSlider.setHeight(screenHeight/15);
+        bidSlider.getStyle().knob.setMinHeight(screenHeight/15);
+        bidSlider.getStyle().knob.setMinWidth(screenHeight/16);
+        bidSlider.getStyle().background.setMinHeight(bidSlider.getHeight()/2);
+
+        bidVal.setSize(screenHeight/15,screenHeight/15);
+        //bidVal.getStyle().font.
     }
 
-    //ToDo asta da rezolutia ferestrei calumea
+    void resizeOpponents(){
+        //todo de adaugat nicknameul undedva pe Ecran (dupa ce invat partea de fonturi)
+        Vector2 plPos;
+        Vector2 centerPos;
+
+            if(players.size() == 1){
+                //CENTER UP
+                 Player pl = players.remove();
+                     plPos = new Vector2(screenWidth/2,screenHeight/2);
+                     centerPos =  new Vector2(screenWidth/2, screenHeight *14.4f/10);
+                        pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,180,true);
+                     players.add(pl);
+            }
+
+            if(players.size() == 2){
+                //UP left
+                Player pl = players.remove();
+                         plPos = new Vector2(screenWidth/8,screenHeight/2);
+                         centerPos =  new Vector2(0, screenHeight *1.35f);
+                             pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,210,true);
+                    players.add(pl);
+                //UP right
+                    pl = players.remove();
+                        plPos = new Vector2(screenWidth*7/8,screenHeight/2);
+                        centerPos =  new Vector2(screenWidth, screenHeight *1.35f);
+                            pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,-210,true);
+                    players.add(pl);
+            }
+
+            if(players.size() == 3) {
+                System.out.println("3 Plyers");
+
+                Player pl = players.remove();
+                    plPos = new Vector2(screenWidth /8,screenHeight/2);
+                    centerPos =  new Vector2(-screenWidth/2.5f, screenHeight /2);
+                        pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,-90,false);
+                players.add(pl);
+
+                pl = players.remove();
+                    plPos = new Vector2(screenWidth/2,screenHeight/2);
+                    centerPos =  new Vector2(screenWidth/2, screenHeight *14.4f/10);
+                        pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,180,true);
+                players.add(pl);
+
+                pl = players.remove();
+                    plPos = new Vector2(screenWidth/2,screenHeight/2);
+                    centerPos =  new Vector2(screenWidth + screenWidth/3 , screenHeight / 2);
+                        pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,90,true);
+                players.add(pl);
+            }
+
+        if(players.size() == 4) {
+            //TODO implement this
+        }
+
+        if(players.size() == 5) {
+            //TODO and this you lazy fuck
+        }
+
+    }
+
     @Override
     public void resize(int width, int height) {
        // System.out.println("[GameScreen] : resize");
@@ -294,6 +403,7 @@ public class GameScreen implements Screen {
         bidSlider.setPosition(screenWidth/2 - bidSlider.getWidth()/2,screenHeight/2);
         bidButton.setPosition(screenWidth/2 ,screenHeight/2 - bidSlider.getHeight()*2);
         resizeHUD();
+        resizeOpponents();
 
         viewport.update(width, height, true);
         init();
@@ -320,19 +430,9 @@ public class GameScreen implements Screen {
     }
 
     public void renderCardBack(int x, int y, float rot){
-
         batch.draw(regions[4][0],x,y,0.0f,0.0f,regions[4][0].getRegionWidth(),regions[4][0].getRegionHeight(),1.0f,1.0f,rot);
-
     }
 
-    public void renderHand( List<Card> cards){
-        float rot = cards.size()*5/2;
-        int i = 0;
-        for (Card cd:cards) {
-            renderCard(cd,(int)(screenWidth - cards.size()*20 + i),5,rot-=5);
-            i+=25;
-        }
-    }
 
     public float getScreenWidth() {
         return screenWidth;

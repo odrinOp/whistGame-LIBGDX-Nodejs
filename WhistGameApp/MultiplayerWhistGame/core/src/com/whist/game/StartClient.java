@@ -86,12 +86,12 @@ public class StartClient extends Game  {
         createRoomScreen = new CreateRoomScreen(this);
         lobbyScreen = new LobbyScreen(this);
         joinRoomScreen = new JoinRoomScreen(this);
-        loadingScreen = new LoadingScreen(this);
+       // loadingScreen = new LoadingScreen(this);
         gameScreen = new GameScreen(this);
         credentialsScreen = new CredentialsScreen(this);
 
         login();
-        setScreen(gameScreen);
+        setScreen(loadingScreen);
 
     }
 
@@ -113,7 +113,8 @@ public class StartClient extends Game  {
         socket.on("connected", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                state = AppState.MAIN_MENU;
+                //todo pune asta inapoi pe loading
+                state = AppState.GAME_SCREEN;
                 changeState = true;
             }
         });
@@ -183,9 +184,9 @@ public class StartClient extends Game  {
                     for(int i = 0; i< playersJSON.length(); i++){
                         JSONObject tempJSON = playersJSON.getJSONObject(i);
                         String nickname = tempJSON.getString("nickname");
-                        Player pl = new Player(nickname);
+                        //Player pl = new Player(nickname);
                         //todo de pus astia in coada
-                        gameScreen.players.add(pl);
+                       // gameScreen.players.add(pl);
                     }
                     System.out.println("|PLAYERS| = " + gameScreen.players);
                 } catch (Exception e) {
