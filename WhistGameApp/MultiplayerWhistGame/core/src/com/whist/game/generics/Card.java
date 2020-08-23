@@ -20,6 +20,7 @@ public class Card extends Actor implements Comparable<Card>{
     private static final float FOLLOW_MULTIPLIER = 5.0f;
     public Vector2 position ;// pozitia cartii
     public Vector2 originalPosition;
+    public float originalRot;
 
     boolean following = false;
     boolean goingBack = false;
@@ -93,6 +94,7 @@ public class Card extends Actor implements Comparable<Card>{
             //todo de resetat rotatia la touchUp/touchDown
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
                 targetPosition = new Vector2(cardActor.getX() + x, cardActor.getY() + y);
                 following = true;
                 goingBack = false;
@@ -106,7 +108,7 @@ public class Card extends Actor implements Comparable<Card>{
                    // System.out.println("touchDragged" + targetPosition.x + " " + targetPosition.y);
                 }
                 if(following == true && targetPosition.y > Gdx.graphics.getHeight()/2){
-                    if(gameScreen.canChooseCard){
+                    if(gameScreen.canChooseCard && !thisCard.getSymbol().equals("b")){
                         //System.out.println("[Card] : Gdx.height = " + Gdx.graphics.getHeight());
                         originalPosition.y = Gdx.graphics.getHeight()/2;
                         //ToDo ceva .emmit() pentru o singura carte

@@ -28,9 +28,50 @@ public class Player extends Actor {
         this.nrOfCards = nrOfCards;
     }
 
-    public void positionCards(int width, int height,Vector2 plPos,Vector2 centerPos,float R,float rotation, boolean inverse){
+    //todo pot fi combinate in aceeasi funtie in functie de cele 2 cadrane in care se deseneaza
+    //todo in functie de unde e playerul fata de centrul cercului
+    public void positionCardsHor(int width, int height,Vector2 plPos,Vector2 centerPos,float R,float rotation, boolean inverse){
+        float xOffset =  width / 40;
+        float rotOffset = 3;
+        float rot;
 
-        //todo gaseste o relatie intre player position si centrul cercului
+        boolean portrait = false;
+        boolean landscape = false;
+
+        float cardWidth = min(height,width) /4 * 0.6f;
+        float cardHeight = min(height,width) /4;
+
+
+        if (height > width){
+            portrait = true;
+        }else{
+            landscape = true;
+        }
+
+        float x = plPos.x - cards.size()*xOffset/2;
+        float y ;
+        rot =  cards.size()/2 * rotOffset;
+        for (Card crd : cards) {
+
+            if(inverse){
+                y = (float) (-sqrt(abs(R*R - (x-centerPos.x)*(x-centerPos.x))) + centerPos.y);
+            }else{
+                y = (float) (sqrt(abs(R*R - (x-centerPos.x)*(x-centerPos.x))) + centerPos.y);
+            }
+
+            crd.getCardActor().setWidth(cardWidth*3/4);
+            crd.getCardActor().setHeight(cardHeight*3/4);
+            crd.getCardActor().setOriginX(cardWidth*3/4/2);
+            crd.rePosition(x,y);
+            crd.setRot( - rot + rotation );
+            crd.setTouchable(Touchable.disabled);
+            rot -= rotOffset;
+            x += xOffset;
+        }
+    }
+
+    public void positionCardsVert(int width, int height,Vector2 plPos,Vector2 centerPos,float R,float rotation, boolean inverse){
+
         float xOffset =  width / 40;
         float rotOffset = 3;
         float rot;
@@ -49,26 +90,26 @@ public class Player extends Actor {
         }
 
         //float x = width/2 - cards.size()*xOffset/2;
-        float x = plPos.x - cards.size()*xOffset/2;
-        float y ;
+        float x ;
+        float y = plPos.y - cards.size()*xOffset/2;
         rot =  cards.size()/2 * rotOffset;
         for (Card crd : cards) {
 
             if(inverse){
-                y = (float) (-sqrt(abs(R*R - (x-centerPos.x)*(x-centerPos.x))) + centerPos.y);
+                x = (float) (-sqrt(abs(R*R - (y-centerPos.y)*(y-centerPos.y))) + centerPos.x);
+                crd.setRot( rot + rotation );
             }else{
-                y = (float) (sqrt(abs(R*R - (x-centerPos.x)*(x-centerPos.x))) + centerPos.y);
+                x = (float) (sqrt(abs(R*R - (y-centerPos.y)*(y-centerPos.y))) + centerPos.x);
+                crd.setRot( - rot + rotation );
             }
 
             crd.getCardActor().setWidth(cardWidth*3/4);
             crd.getCardActor().setHeight(cardHeight*3/4);
             crd.getCardActor().setOriginX(cardWidth*3/4/2);
-            System.out.println("X = " + x + " Y = "+ y);
             crd.rePosition(x,y);
-            crd.setRot( - rot + rotation );
-           // crd.setTouchable(Touchable.disabled);
+            crd.setTouchable(Touchable.disabled);
             rot -= rotOffset;
-            x += xOffset;
+            y += xOffset;
         }
     }
 
