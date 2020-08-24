@@ -15,4 +15,5 @@ public class Constants {
    public final static String serverHTTP = "http://localhost:8080";
 
 
+    public static final float HUD_FONT_REFERENCE_SCREEN_SIZE =  480.0f;
 }

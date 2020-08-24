@@ -31,7 +31,7 @@ public class Player extends Actor {
     //todo pot fi combinate in aceeasi funtie in functie de cele 2 cadrane in care se deseneaza
     //todo in functie de unde e playerul fata de centrul cercului
     public void positionCardsHor(int width, int height,Vector2 plPos,Vector2 centerPos,float R,float rotation, boolean inverse){
-        float xOffset =  width / 40;
+        float xOffset =  width / 45;
         float rotOffset = 3;
         float rot;
 
@@ -72,7 +72,7 @@ public class Player extends Actor {
 
     public void positionCardsVert(int width, int height,Vector2 plPos,Vector2 centerPos,float R,float rotation, boolean inverse){
 
-        float xOffset =  width / 40;
+        float xOffset =  width / 45;
         float rotOffset = 3;
         float rot;
 

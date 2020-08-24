@@ -2,6 +2,7 @@ package com.whist.game.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.whist.game.StartClient;
 import com.whist.game.generics.Card;
@@ -42,7 +44,6 @@ public class GameScreen implements Screen {
     Stage stage;
     Skin skin;
     StartClient mainController;
-    private SpriteBatch batch;
     private TextureRegion[][] regions;
     Texture cardSprite = new Texture("cardSprite.gif");
 
@@ -75,6 +76,9 @@ public class GameScreen implements Screen {
     Slider bidSlider;
     Label bidVal;
     TextButton bidButton;
+
+    SpriteBatch batch;
+    BitmapFont font;
 
 
     public void init() {
@@ -125,9 +129,9 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
 
-        Texture texture = new Texture(Gdx.files.internal("OCRAsrd.png"));
-        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        BitmapFont font = new BitmapFont(Gdx.files.internal("OCRAsrd.fnt"), new TextureRegion(texture), false);
+//        Texture texture = new Texture(Gdx.files.internal("OCRAsrd.png"));
+//        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        BitmapFont font = new BitmapFont(Gdx.files.internal("OCRAsrd.fnt"), new TextureRegion(texture), false);
 
         //putDownCards.add(new Card("h-12",regions,screenWidth/2 ,screenHeight/2,this));
 
@@ -142,10 +146,14 @@ public class GameScreen implements Screen {
         Player hudi =  new Player("Hudy",8);
         Player odr  =  new Player("Odrin",8);
         Player hudi2  =  new Player("Hudy2",8);
+        Player hudi3  =  new Player("Hudy2",8);
+        Player hudi4  =  new Player("Hudy2",8);
 
         players.add(hudi);
         players.add(odr);
         players.add(hudi2);
+        players.add(hudi3);
+        players.add(hudi4);
 
 
 //        Card card =  new Card("b-2",regions,screenWidth/2,screenHeight/2,this);
@@ -165,6 +173,11 @@ public class GameScreen implements Screen {
        // stage.addActor(bidButton);
         //stage.addActor(card.getCardActor());
 
+        //todo vezi care e faza cu shaderele ca pare tare smecher
+        font = new BitmapFont();
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setColor(Color.BLACK);
+
     }
      List<Card> initCards(List<String> cards){
         float rot = cards.size()*5/2;
@@ -179,7 +192,6 @@ public class GameScreen implements Screen {
         }
         Collections.sort(cards);
 
-        //ToDo gen ar merge si validate
         for (String str:cards) {
             card =  new Card(str,regions,screenWidth - i,Constants.CARD_HAND_Y,this);
             ret.add(card);
@@ -189,7 +201,6 @@ public class GameScreen implements Screen {
         return ret;
     }
 
-    //todo coada de plyeri tebuie initializate bine
     void initOpponetCards(Queue<Player> players){
         Card card;
         for (Player pl : players) {
@@ -246,7 +257,7 @@ public class GameScreen implements Screen {
 
     void putDownCard(Card card){
         card.getCardActor().setOriginX(card.getCardActor().getWidth()/2);
-        System.out.println(screenHeight);
+       // System.out.println(screenHeight);
         card.rePosition((float)screenWidth/2,(float)screenHeight/2);
         card.setRot((putDownCards.size() - 1)*50);
         putDownCards.add(card);
@@ -266,6 +277,14 @@ public class GameScreen implements Screen {
         renderPutDownCards(delta,putDownCards);
         renderHUD(delta,hand);
         updateOpponents(delta);
+
+        String str =  "dadasdas";
+        batch.begin();
+
+        font.draw(batch, str, 100,100);
+
+        batch.end();
+
 
         stage.act(delta);
         stage.draw();
@@ -330,7 +349,7 @@ public class GameScreen implements Screen {
         bidVal.setSize(screenHeight/15,screenHeight/15);
         //bidVal.getStyle().font.
     }
-
+//behemoth ... nu dedschideti
     void resizeOpponents(){
         //todo de adaugat nicknameul undedva pe Ecran (dupa ce invat partea de fonturi)
         Vector2 plPos;
@@ -383,10 +402,65 @@ public class GameScreen implements Screen {
             }
 
         if(players.size() == 4) {
-            //TODO implement this
+            System.out.println("4 Plyers");
+            Player pl = players.remove();
+                plPos = new Vector2(screenWidth /8,screenHeight/2);
+                centerPos =  new Vector2(-screenWidth/2.5f, screenHeight /2);
+                    pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,-90,false);
+            players.add(pl);
+
+            pl = players.remove();
+                plPos = new Vector2(screenWidth/4,screenHeight/2);
+                centerPos =  new Vector2(screenWidth*2/8, screenHeight *14f/10);
+                    pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,185,true);
+            players.add(pl);
+
+            pl = players.remove();
+                plPos = new Vector2(screenWidth*3/4,screenHeight/2);
+                centerPos =  new Vector2(screenWidth*6/8, screenHeight *14f/10);
+                    pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,-185,true);
+            players.add(pl);
+
+            pl = players.remove();
+                plPos = new Vector2(screenWidth/2,screenHeight/2);
+                centerPos =  new Vector2(screenWidth + screenWidth/3 , screenHeight / 2);
+                    pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,90,true);
+            players.add(pl);
         }
 
         if(players.size() == 5) {
+
+            Player pl = players.remove();
+                plPos = new Vector2(screenWidth /8,screenHeight/2.9f);
+                centerPos =  new Vector2(-screenWidth/2.5f, screenHeight /4);
+                    pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,-68,false);
+            players.add(pl);
+
+            //UP left
+            pl = players.remove();
+                plPos = new Vector2(screenWidth/8,screenHeight/2);
+                centerPos =  new Vector2(0, screenHeight *1.35f);
+                    pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,210,true);
+            players.add(pl);
+
+            pl = players.remove();
+                plPos = new Vector2(screenWidth/2,screenHeight/2);
+                centerPos =  new Vector2(screenWidth/2, screenHeight *14.4f/10);
+                    pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,180,true);
+            players.add(pl);
+
+            //UP right
+            pl = players.remove();
+                plPos = new Vector2(screenWidth*7/8,screenHeight/2);
+                centerPos =  new Vector2(screenWidth, screenHeight *1.35f);
+                    pl.positionCardsHor((int)screenWidth, (int)screenHeight, plPos,centerPos,screenHeight/2,-210,true);
+            players.add(pl);
+
+            pl = players.remove();
+                plPos = new Vector2(screenWidth/2,screenHeight /2.9f);
+                centerPos =  new Vector2(screenWidth + screenWidth/3 , screenHeight / 4);
+                    pl.positionCardsVert((int)screenWidth, (int)screenHeight, plPos,centerPos,screenWidth/2.5f,68,true);
+            players.add(pl);
             //TODO and this you lazy fuck
         }
 
@@ -404,6 +478,7 @@ public class GameScreen implements Screen {
         bidButton.setPosition(screenWidth/2 ,screenHeight/2 - bidSlider.getHeight()*2);
         resizeHUD();
         resizeOpponents();
+        font.getData().setScale(Math.min(width, height) / Constants.HUD_FONT_REFERENCE_SCREEN_SIZE);
 
         viewport.update(width, height, true);
         init();
